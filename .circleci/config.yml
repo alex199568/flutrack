@@ -1,6 +1,7 @@
 version: 2
 jobs:
   check:
+    docker: circleci/openjdk:8-jdk
     steps:
       - checkout
       - run:
@@ -13,6 +14,7 @@ jobs:
         path: app/build/reports/lint-results-release.html
 
   test:
+    docker: circleci/openjdk:8-jdk
     steps:
       - checkout
       - run:
