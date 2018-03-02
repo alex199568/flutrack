@@ -2,7 +2,7 @@ version: 2
 jobs:
     check:
         docker:
-            - image: circleci/openjdk:8-jdk
+            - image: circleci/android
         steps:
             - checkout
             - run:
@@ -16,7 +16,7 @@ jobs:
 
     test:
         docker:
-            - image: circleci/openjdk:8-jdk
+            - image: circleci/android
         steps:
             - checkout
             - run:
@@ -30,7 +30,7 @@ jobs:
 
     build:
         docker:
-            - image: circleci/openjdk:8-jdk
+            - image: circleci/android
         steps:
             - checkout
             - run:
