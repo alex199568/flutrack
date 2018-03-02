@@ -32,6 +32,9 @@ jobs:
         name: Clean
         command: ./gradlew clean
       - run:
+        name: Download keystore
+        command: curl -L -o ./app/release.jks $KEYSTORE_PATH
+      - run:
         name: Build apk
         command: ./gradlew assembleRelease
       - store_artifacts:
