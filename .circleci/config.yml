@@ -6,33 +6,49 @@ jobs:
         steps:
             - checkout
             - run:
-                name: Clean
-                command: ./gradlew clean
+                name: Download google-services.json
+                command: curl -L -o ./app/google-services.json $GOOGLE_SERVICES_JSON_PATH
             - run:
                 name: Run lint
                 command: ./gradlew lintRelease
             - store_artifacts:
                 path: app/build/reports/lint-results-release.html
+            - run:
+                name: Run detekt
+                command: ./gradlew detektCheck
+            - store_artifacts:
+                path: app/build/reports/detekt-report.html
+            - run:
+                name: Run ktlint check
+                command: ./gradlew ktlintCheck
+            - run:
+                name: Run ktlint format
+                command: ./gradlew ktlintFormat
 
-    test:
+    unit_tests:
         docker:
             - image: circleci/android:api-27-alpha
         steps:
             - checkout
             - run:
-                name: Clean
-                command: ./gradlew clean
+                name: Download google-services.json
+                command: curl -L -o ./app/google-services.json $GOOGLE_SERVICES_JSON_PATH
             - run:
-                name: Run tests
-                command: ./gradlew testRelease
-            - store_test_results:
+                name: Run unit tests with report
+                command: ./gradlew jacocoTestReport
+            - store_artifacts:
                 path: app/build/reports/tests
+            - store_artifacts:
+                path: app/build/reports/jacocoTestReport/html
 
     build:
         docker:
             - image: circleci/android:api-27-alpha
         steps:
             - checkout
+            - run:
+                name: Download google-services.json
+                command: curl -L -o ./app/google-services.json $GOOGLE_SERVICES_JSON_PATH
             - run:
                 name: Clean
                 command: ./gradlew clean
@@ -51,11 +67,11 @@ workflows:
     check_test_build:
         jobs:
             - check
-            - test
+            - unit_tests
             - build:
                 requires:
                     - check
-                    - test
+                    - unit_tests
                 filters:
                     branches:
                         only: master
