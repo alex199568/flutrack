@@ -65,7 +65,7 @@ workflows:
             - build:
                 requires:
                     - check
-                    - test
+                    - unit_test
                 filters:
                     branches:
                         only: master
