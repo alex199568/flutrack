@@ -13,6 +13,11 @@ jobs:
                 command: ./gradlew lintRelease
             - store_artifacts:
                 path: app/build/reports/lint-results-release.html
+            - run:
+                name: Run detekt
+                command: ./gradlew detektCheck
+            - store_artifacts:
+                path: app/build/reports/detekt-report.html
 
     test:
         docker:
