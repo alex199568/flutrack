@@ -6,8 +6,8 @@ jobs:
         steps:
             - checkout
             - run:
-                name: Clean
-                command: ./gradlew clean
+                name: Download google-services.json
+                command: curl -L -o ./app/google-services.json $GOOGLE_SERVICES_JSON_PATH
             - run:
                 name: Run lint
                 command: ./gradlew lintRelease
@@ -25,14 +25,14 @@ jobs:
                 name: Run ktlint format
                 command: ./gradlew ktlintFormat
 
-    test:
+    unit_tests:
         docker:
             - image: circleci/android:api-27-alpha
         steps:
             - checkout
             - run:
-                name: Clean
-                command: ./gradlew clean
+                name: Download google-services.json
+                command: curl -L -o ./app/google-services.json $GOOGLE_SERVICES_JSON_PATH
             - run:
                 name: Run unit tests with report
                 command: ./gradlew jacocoTestReport
@@ -46,6 +46,9 @@ jobs:
             - image: circleci/android:api-27-alpha
         steps:
             - checkout
+            - run:
+                name: Download google-services.json
+                command: curl -L -o ./app/google-services.json $GOOGLE_SERVICES_JSON_PATH
             - run:
                 name: Clean
                 command: ./gradlew clean
@@ -64,11 +67,11 @@ workflows:
     check_test_build:
         jobs:
             - check
-            - test
+            - unit_tests
             - build:
                 requires:
                     - check
-                    - test
+                    - unit_tests
                 filters:
                     branches:
                         only: master
