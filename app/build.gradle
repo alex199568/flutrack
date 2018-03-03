@@ -32,6 +32,9 @@ android {
         test.java.srcDirs += 'src/test/kotlin'
         androidTest.java.srcDirs += 'src/androidTest/kotlin'
     }
+    lintOptions {
+        lintConfig = file("lint.xml")
+    }
 }
 
 apply plugin: 'jacoco'
@@ -85,6 +88,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:27.1.0'
+    implementation 'com.android.support:support-media-compat:27.1.0'
+    implementation 'com.android.support:support-v4:27.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.google.firebase:firebase-core:11.8.0'
     testImplementation 'junit:junit:4.12'
