@@ -18,6 +18,12 @@ jobs:
                 command: ./gradlew detektCheck
             - store_artifacts:
                 path: app/build/reports/detekt-report.html
+            - run:
+                name: Run ktlint check
+                command: ./gradlew ktlintCheck
+            - run:
+                name: Run ktlint format
+                command: ./gradlew ktlintFormat
 
     test:
         docker:
