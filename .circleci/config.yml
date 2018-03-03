@@ -6,6 +6,9 @@ jobs:
         steps:
             - checkout
             - run:
+                name: Download google-services.json
+                command: curl -L -o ./app/google-services.json $GOOGLE_SERVICES_JSON_PATH
+            - run:
                 name: Run lint
                 command: ./gradlew lintRelease
             - store_artifacts:
@@ -27,6 +30,9 @@ jobs:
             - image: circleci/android:api-27-alpha
         steps:
             - checkout
+            - run:
+                name: Download google-services.json
+                command: curl -L -o ./app/google-services.json $GOOGLE_SERVICES_JSON_PATH
             - run:
                 name: Run unit tests with report
                 command: ./gradlew jacocoTestReport
