@@ -19,6 +19,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        def fabricKeyValue = System.getenv("FABRIC_KEY")
+        manifestPlaceholders =  [fabricKey: fabricKeyValue == null ? "" : fabricKeyValue ]
     }
     buildTypes {
         release {
@@ -87,6 +89,12 @@ fileTree(
         dir: "$buildDir/tmp/kotlin-classes/debug",
 )
 
+apply plugin: 'io.fabric'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
@@ -99,6 +107,9 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     androidTestUtil 'com.android.support.test:orchestrator:1.0.1'
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') {
+        transitive = true
+    }
 }
 
 apply plugin: 'com.google.gms.google-services'
