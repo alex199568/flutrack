@@ -1,16 +1,42 @@
 package version.evening.canvas.flutrack
 
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var aboutFragment: AboutFragment
+    private lateinit var mapFragment: MapFragment
+    private lateinit var dashboardFragment: DashboardFragment
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val inputModifier = InputModifier()
+        aboutFragment = createAboutFragment()
+        mapFragment = createMapFragment()
+        dashboardFragment = createDashboardFragment()
 
-        process_button.setOnClickListener { output_field.text = inputModifier.modify(input_field.text.toString()) }
+        bottomNavigation.setOnNavigationItemSelectedListener {
+            val fragment = when (it.itemId) {
+                R.id.map -> mapFragment
+                R.id.dashboard -> dashboardFragment
+                R.id.about -> aboutFragment
+                else -> null
+            }
+            if (fragment == null) {
+                false
+            } else {
+                setContentFragment(fragment)
+                true
+            }
+        }
+
+        setContentFragment(mapFragment)
+    }
+
+    private fun setContentFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction().replace(R.id.mainContentContainer, fragment).commit()
     }
 }
