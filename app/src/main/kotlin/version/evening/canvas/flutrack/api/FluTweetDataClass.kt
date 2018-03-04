@@ -2,7 +2,7 @@ package version.evening.canvas.flutrack.api
 
 import com.google.gson.annotations.SerializedName
 
-data class FluTweet(
+data class FluTweetDataClass(
         @SerializedName("user_name") val userName: String,
         @SerializedName("tweet_text") val tweetText: String,
         val latitude: Double,

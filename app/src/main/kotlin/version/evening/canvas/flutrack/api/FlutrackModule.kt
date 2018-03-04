@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit
 const val FLUTRACK_ALL_BASE_URL = "http://flutrack.org"
 const val CONNECT_TIMEOUT = 60L
 const val READ_TIMEOUT = 300L
+const val MAX_CACHE_SIZE = 1024L * 1024L * 2L
 
 @Module
 class FlutrackModule {
@@ -43,7 +44,7 @@ class FlutrackModule {
     @Provides
     fun provideCache(context: Context): Cache {
         val directory = File(context.cacheDir, "responses")
-        return Cache(directory, 1024 * 1024 * 2)
+        return Cache(directory, MAX_CACHE_SIZE)
     }
 
     @AppScope

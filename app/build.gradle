@@ -70,7 +70,9 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
             '**/*Activity*',
             '**/*Scope*',
             '**/*Component*',
-            '**/*Module*'
+            '**/*Module*',
+            '**/*DataClass*',
+            '**/*Application*'
     ]
     classDirectories = fileTree(
             dir: "$buildDir/intermediates/classes/debug",
