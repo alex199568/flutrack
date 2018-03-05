@@ -22,6 +22,14 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         def fabricKeyValue = System.getenv("FABRIC_KEY")
         manifestPlaceholders =  [fabricKey: fabricKeyValue == null ? "" : fabricKeyValue ]
+
+        def secretProperties = new Properties()
+        file("${rootProject.projectDir}/secret.properties").withInputStream { stream ->
+            secretProperties.load(stream)
+        }
+        secretProperties.forEach { key, value ->
+            buildConfigField("String", key, value)
+        }
     }
     buildTypes {
         release {
