@@ -10,7 +10,7 @@ jobs:
                 command: curl -L -o ./app/google-services.json $GOOGLE_SERVICES_JSON_PATH
             - run:
                 name: Download secret properties
-                command: Scurl -L -o ./secret.properties $SECRET_PROPERTIES_PATH
+                command: curl -L -o ./secret.properties $SECRET_PROPERTIES_PATH
             - run:
                 name: Run lint
                 command: ./gradlew lintRelease
@@ -38,7 +38,7 @@ jobs:
                 command: curl -L -o ./app/google-services.json $GOOGLE_SERVICES_JSON_PATH
             - run:
                 name: Download secret properties
-                command: Scurl -L -o ./secret.properties $SECRET_PROPERTIES_PATH
+                command: curl -L -o ./secret.properties $SECRET_PROPERTIES_PATH
             - run:
                 name: Run unit tests with report
                 command: ./gradlew jacocoTestReport
@@ -57,7 +57,7 @@ jobs:
                 command: curl -L -o ./app/google-services.json $GOOGLE_SERVICES_JSON_PATH
             - run:
                 name: Download secret properties
-                command: Scurl -L -o ./secret.properties $SECRET_PROPERTIES_PATH
+                command: curl -L -o ./secret.properties $SECRET_PROPERTIES_PATH
             - run:
                 name: Clean
                 command: ./gradlew clean
