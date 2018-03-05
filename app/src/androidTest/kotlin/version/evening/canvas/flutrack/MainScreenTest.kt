@@ -2,9 +2,9 @@ package version.evening.canvas.flutrack
 
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.action.ViewActions.click
+import android.support.test.espresso.assertion.ViewAssertions.doesNotExist
 import android.support.test.espresso.assertion.ViewAssertions.matches
-import android.support.test.espresso.matcher.ViewMatchers.withId
-import android.support.test.espresso.matcher.ViewMatchers.withText
+import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.filters.LargeTest
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
@@ -21,14 +21,16 @@ class MainScreenTest {
 
     @Test
     fun testStartedWithMapFragment() {
-        onView(withId(R.id.fragmentLabel)).check(matches(withText("Map")))
+        onView(withId(R.id.mapView)).check(matches(isDisplayed()))
+        onView(withId(R.id.fragmentLabel)).check(doesNotExist())
     }
 
     @Test
     fun testPressMapButton() {
         onView(withId(R.id.map)).perform(click())
 
-        onView(withId(R.id.fragmentLabel)).check(matches(withText("Map")))
+        onView(withId(R.id.mapView)).check(matches(isDisplayed()))
+        onView(withId(R.id.fragmentLabel)).check(doesNotExist())
     }
 
     @Test
@@ -36,6 +38,7 @@ class MainScreenTest {
         onView(withId(R.id.dashboard)).perform(click())
 
         onView(withId(R.id.fragmentLabel)).check(matches(withText("Dashboard")))
+        onView(withId(R.id.mapView)).check(doesNotExist())
     }
 
     @Test
@@ -43,5 +46,6 @@ class MainScreenTest {
         onView(withId(R.id.about)).perform(click())
 
         onView(withId(R.id.fragmentLabel)).check(matches(withText("About")))
+        onView(withId(R.id.mapView)).check(doesNotExist())
     }
 }

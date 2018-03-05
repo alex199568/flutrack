@@ -21,14 +21,18 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         def fabricKeyValue = System.getenv("FABRIC_KEY")
-        manifestPlaceholders =  [fabricKey: fabricKeyValue == null ? "" : fabricKeyValue ]
+        manifestPlaceholders = [fabricKey: fabricKeyValue == null ? "" : fabricKeyValue ]
 
         def secretProperties = new Properties()
         file("${rootProject.projectDir}/secret.properties").withInputStream { stream ->
             secretProperties.load(stream)
         }
         secretProperties.forEach { key, value ->
-            buildConfigField("String", key, value)
+            if (key == "GOOGLE_MAPS_API_KEY") {
+                manifestPlaceholders.put('googleMapsKey', value)
+            } else {
+                buildConfigField("String", key, value)
+            }
         }
     }
     buildTypes {
@@ -117,6 +121,7 @@ dependencies {
     implementation 'com.android.support:support-v4:27.1.0'
     implementation 'com.android.support:design:27.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.google.android.gms:play-services-maps:11.8.0'
     implementation 'com.google.firebase:firebase-core:11.8.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
