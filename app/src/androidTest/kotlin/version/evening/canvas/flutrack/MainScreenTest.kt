@@ -22,20 +22,6 @@ class MainScreenTest {
     val rule = ActivityTestRule<MainActivity>(MainActivity::class.java)
 
     @Test
-    fun testStartedWithMapFragment() {
-        onView(withId(R.id.mapView)).check(matches(isDisplayed()))
-        onView(withId(R.id.fragmentLabel)).check(doesNotExist())
-    }
-
-    @Test
-    fun testPressMapButton() {
-        onView(withId(R.id.map)).perform(click())
-
-        onView(withId(R.id.mapView)).check(matches(isDisplayed()))
-        onView(withId(R.id.fragmentLabel)).check(doesNotExist())
-    }
-
-    @Test
     fun testPressDashboardButton() {
         onView(withId(R.id.dashboard)).perform(click())
 
