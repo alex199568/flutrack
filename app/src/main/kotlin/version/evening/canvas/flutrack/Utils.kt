@@ -1,14 +1,13 @@
 package version.evening.canvas.flutrack
 
 import io.reactivex.Observable
-import io.reactivex.functions.Consumer
 import java.text.SimpleDateFormat
 import java.util.*
 
 fun String.millisToReadableDate(): String {
     val formatter = SimpleDateFormat.getDateInstance()
     val calendar = Calendar.getInstance().apply {
-        timeInMillis = toLong()
+        timeInMillis = toLong() * 1000L
     }
     return formatter.format(calendar.time)
 }

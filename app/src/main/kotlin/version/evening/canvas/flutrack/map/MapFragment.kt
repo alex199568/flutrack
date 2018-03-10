@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_map.*
 import kotlinx.android.synthetic.main.fragment_map.view.*
 import version.evening.canvas.flutrack.FlutrackApplication
@@ -30,9 +32,22 @@ class MapFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = layoutInflater.inflate(R.layout.fragment_map, container, false)
 
+        val infoWindowAdapter = TweetInfoWindowAdapter(context!!)
+
         this.mapView = view.mapView.apply {
             onCreate(savedInstanceState)
-            getMapAsync { }
+            getMapAsync { map ->
+                viewModel.tweetsObservable.subscribe {
+                    val markerOptions = MarkerOptions().apply {
+                        position(it.latLng)
+                    }
+                    val marker = map.addMarker(markerOptions)
+                    infoWindowAdapter.registerMarkerData(marker, it)
+                }
+                map.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style))
+                map.setInfoWindowAdapter(infoWindowAdapter)
+                map.uiSettings.isMapToolbarEnabled = false
+            }
         }
 
         return view
@@ -40,9 +55,6 @@ class MapFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.tweetsObservable.subscribe {
-            // add markers
-        }
         viewModel.errorObservable.subscribe {
             Toast.makeText(context, "Could not load data", Toast.LENGTH_SHORT).show()
         }
