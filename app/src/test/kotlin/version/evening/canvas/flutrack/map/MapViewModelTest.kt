@@ -43,7 +43,7 @@ class MapViewModelTest {
         var numOfTweets = 0
 
         mapViewModel.tweetsObservable.subscribe {
-            val compareWith = when(numOfTweets++) {
+            val compareWith = when (numOfTweets++) {
                 0 -> tweet1
                 1 -> tweet2
                 else -> throw IllegalArgumentException("there are only two tweets")
