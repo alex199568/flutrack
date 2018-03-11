@@ -12,6 +12,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mapFragment: MapFragment
     private lateinit var dashboardFragment: DashboardFragment
 
+    private lateinit var dataErrorFragment: DataErrorFragment
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -19,6 +21,7 @@ class MainActivity : AppCompatActivity() {
         aboutFragment = createAboutFragment()
         mapFragment = createMapFragment()
         dashboardFragment = createDashboardFragment()
+        dataErrorFragment = createDataErrorFragment()
 
         bottomNavigation.setOnNavigationItemSelectedListener {
             val fragment = when (it.itemId) {
@@ -36,6 +39,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         setContentFragment(mapFragment)
+
+        mapFragment.dataErrorObservable.subscribe {
+            setContentFragment(dataErrorFragment)
+        }
+        dataErrorFragment.retryObservable.subscribe {
+            setContentFragment(mapFragment)
+        }
     }
 
     private fun setContentFragment(fragment: Fragment) {

@@ -5,10 +5,11 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_map.*
 import kotlinx.android.synthetic.main.fragment_map.view.*
 import version.evening.canvas.flutrack.FlutrackApplication
@@ -21,11 +22,16 @@ class MapFragment : Fragment() {
     @Inject
     lateinit var viewModel: MapViewModel
 
+    private val dataErrorSubject = PublishSubject.create<Unit>()
+    val dataErrorObservable: Observable<Unit> = dataErrorSubject
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val appComponent = (activity?.application as FlutrackApplication).appComponent
+
         DaggerMapComponent.builder().mapModule(MapModule(
-                (activity?.application as FlutrackApplication).appComponent.flutrackAll()
+                appComponent.flutrackAll(), appComponent.schedulers()
         )).build().inject(this)
     }
 
@@ -56,7 +62,7 @@ class MapFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.errorObservable.subscribe {
-            Toast.makeText(context, "Could not load data", Toast.LENGTH_SHORT).show()
+            dataErrorSubject.onNext(Unit)
         }
         viewModel.firstObservable.subscribe {
             mapView.visibility = View.VISIBLE

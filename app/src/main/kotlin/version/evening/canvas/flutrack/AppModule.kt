@@ -9,4 +9,8 @@ class AppModule(private val context: Context) {
     @AppScope
     @Provides
     fun provideContext(): Context = context
+
+    @AppScope
+    @Provides
+    fun provideSchedulers(): SchedulersWrapper = SchedulersWrapper()
 }

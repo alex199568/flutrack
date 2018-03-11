@@ -5,7 +5,7 @@ import version.evening.canvas.flutrack.toBooleanExtra
 import version.evening.canvas.flutrack.api.FluTweet
 import version.evening.canvas.flutrack.defaultDateFormat
 import version.evening.canvas.flutrack.millisToReadableDate
-import java.util.*
+import java.util.Calendar
 
 data class MapTweet (
         val userName: String,
@@ -20,7 +20,7 @@ data class MapTweet (
 
     constructor(fluTweet: FluTweet) : this(
             userName = fluTweet.userName ?: "Unknown",
-            tweetText =  fluTweet.tweetText ?: "NO_TEXT",
+            tweetText = fluTweet.tweetText ?: "NO_TEXT",
             latitude = fluTweet.latitude ?: 0.0,
             longitude = fluTweet.longitude ?: 0.0,
             tweetDate = fluTweet.tweetDate?.millisToReadableDate() ?: Calendar.getInstance().defaultDateFormat(),

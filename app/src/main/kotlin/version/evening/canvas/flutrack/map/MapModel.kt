@@ -9,5 +9,4 @@ class MapModel(private val flutrackAll: FlutrackAll) {
                     .results()
                     .flatMapIterable { it }
                     .map { MapTweet(it) }
-
 }

@@ -8,4 +8,5 @@ import version.evening.canvas.flutrack.api.FlutrackModule
 @Component(modules = [(FlutrackModule::class), (AppModule::class)])
 interface AppComponent {
     fun flutrackAll(): FlutrackAll
+    fun schedulers(): SchedulersWrapper
 }

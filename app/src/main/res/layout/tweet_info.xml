@@ -2,6 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="UnusedResources"
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
@@ -29,7 +30,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="8dp"
-        >
+        tools:ignore="UseCompoundDrawables">
 
         <TextView
             android:id="@+id/tweetDate"
@@ -37,7 +38,9 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            tools:text="22/12/2018"/>
+            tools:text="22/12/2018"
+
+            />
 
         <ImageView
             android:id="@+id/aggravationIndicator"
@@ -48,7 +51,7 @@
             android:tint="@android:color/holo_red_dark"
             android:visibility="gone"
             tools:visibility="visible"
-            />
+            tools:ignore="ContentDescription"/>
 
     </LinearLayout>
 

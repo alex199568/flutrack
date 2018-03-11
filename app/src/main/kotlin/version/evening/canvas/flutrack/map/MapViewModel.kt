@@ -1,16 +1,12 @@
 package version.evening.canvas.flutrack.map
 
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
 import version.evening.canvas.flutrack.doOnFirst
 
-const val RETRY_TIMES = 3L
-
-class MapViewModel(model: MapModel) {
+class MapViewModel(model: MapModel, schedulersWrapper: version.evening.canvas.flutrack.SchedulersWrapper) {
     private val tweetsSubject: Subject<MapTweet> = ReplaySubject.create()
     private val errorSubject: Subject<Unit> = BehaviorSubject.create()
     private val firstSubject: Subject<Unit> = BehaviorSubject.create()
@@ -22,15 +18,12 @@ class MapViewModel(model: MapModel) {
     init {
         model
                 .requestAll()
-                .retry(RETRY_TIMES)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(schedulersWrapper.io())
+                .observeOn(schedulersWrapper.android())
                 .doOnFirst { firstSubject.onNext(Unit) }
                 .subscribe(
                         { tweetsSubject.onNext(it) },
-                        {
-                            errorSubject.onNext(Unit)
-                        }
+                        { errorSubject.onNext(Unit) }
                 )
     }
 }
