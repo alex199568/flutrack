@@ -5,5 +5,5 @@ import retrofit2.http.GET
 
 interface FlutrackAll {
     @GET("/results.json")
-    fun results(): Observable<List<FluTweetDataClass>>
+    fun results(): Observable<List<FluTweet>>
 }

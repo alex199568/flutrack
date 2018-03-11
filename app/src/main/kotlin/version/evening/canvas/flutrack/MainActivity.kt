@@ -4,11 +4,15 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import version.evening.canvas.flutrack.map.MapFragment
+import version.evening.canvas.flutrack.map.createMapFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var aboutFragment: AboutFragment
     private lateinit var mapFragment: MapFragment
     private lateinit var dashboardFragment: DashboardFragment
+
+    private lateinit var dataErrorFragment: DataErrorFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,6 +21,7 @@ class MainActivity : AppCompatActivity() {
         aboutFragment = createAboutFragment()
         mapFragment = createMapFragment()
         dashboardFragment = createDashboardFragment()
+        dataErrorFragment = createDataErrorFragment()
 
         bottomNavigation.setOnNavigationItemSelectedListener {
             val fragment = when (it.itemId) {
@@ -34,6 +39,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         setContentFragment(mapFragment)
+
+        mapFragment.dataErrorObservable.subscribe {
+            setContentFragment(dataErrorFragment)
+        }
+        dataErrorFragment.retryObservable.subscribe {
+            setContentFragment(mapFragment)
+        }
     }
 
     private fun setContentFragment(fragment: Fragment) {
