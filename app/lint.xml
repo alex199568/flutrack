@@ -3,4 +3,7 @@
     <issue id="all">
         <ignore path="*/generated/*" />
     </issue>
+    <issue id="UnusedResources">
+        <ignore path="*/map_style.json"/>
+    </issue>
 </lint>
