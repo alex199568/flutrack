@@ -5,4 +5,11 @@
     <string name="bottom_navigation_about">About</string>
     <string name="dataErrorMessage">Network Error</string>
     <string name="dataErrorRetryButtonText">Retry</string>
+    <string name="totalSymptomsSubtitle">Flu Symptoms - Last 7 days</string>
+    <string name="totalSymptomsTitle">Total Symptoms</string>
+    <string name="mostFrequestSymptomSubtitle">Most frequent flu symptom</string>
+    <string name="percentageSubtitle">Most frequent to all symptoms</string>
+    <string name="percentageTitle">% Percentage</string>
+    <string name="totalTweetsTitle">Total Tweets</string>
+    <string name="totalTweetsSubtitle">Current total of visualized tweets</string>
 </resources>
