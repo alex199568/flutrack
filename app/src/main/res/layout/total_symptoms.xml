@@ -9,7 +9,7 @@
     >
 
     <TextView
-        android:id="@+id/subtitle"
+        android:id="@+id/totalSymptomsSubtitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
@@ -28,7 +28,7 @@
         tools:ignore="RtlHardcoded,RtlSymmetry"/>
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/totalSymptomsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
@@ -38,7 +38,7 @@
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        />
+        android:layout_marginRight="24dp"/>
 
     <TextView
         android:id="@+id/totalSymptomsValue"
@@ -51,13 +51,14 @@
         android:textColor="@android:color/white"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/subtitle"
+        app:layout_constraintBottom_toTopOf="@+id/totalSymptomsSubtitle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title"
-        tools:text="1298"/>
+        app:layout_constraintTop_toBottomOf="@+id/totalSymptomsTitle"
+        tools:text="1298"
+        android:layout_marginRight="24dp"/>
 
     <ImageView
-        android:id="@+id/icon"
+        android:id="@+id/totalSymptomsIcon"
         android:layout_width="32dp"
         android:layout_height="0dp"
         android:layout_marginBottom="16dp"
@@ -65,8 +66,10 @@
         android:layout_marginTop="16dp"
         android:scaleType="fitCenter"
         android:tint="@android:color/white"
-        app:layout_constraintBottom_toTopOf="@+id/subtitle"
+        app:layout_constraintBottom_toTopOf="@+id/totalSymptomsSubtitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_male"/>
+        app:srcCompat="@drawable/ic_male"
+        tools:ignore="ContentDescription"
+        android:layout_marginLeft="24dp"/>
 </android.support.constraint.ConstraintLayout>
