@@ -10,6 +10,6 @@
         <ignore path="*/percentage.xml"/>
         <ignore path="*/total_symptoms.xml"/>
         <ignore path="*/total_tweets.xml"/>
-        <ignore path="*/most_frequent_symptom"/>
+        <ignore path="*/most_frequent_symptom.xml"/>
     </issue>
 </lint>
