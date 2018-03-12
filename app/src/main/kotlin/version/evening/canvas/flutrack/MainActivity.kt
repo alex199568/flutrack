@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import version.evening.canvas.flutrack.dashboard.DashboardFragment
+import version.evening.canvas.flutrack.dashboard.createDashboardFragment
 import version.evening.canvas.flutrack.map.MapFragment
 import version.evening.canvas.flutrack.map.createMapFragment
 
