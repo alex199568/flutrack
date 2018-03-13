@@ -1,4 +1,4 @@
-package version.evening.canvas.flutrack
+package version.evening.canvas.flutrack.dashboard
 
 enum class Symptom(val symptom: String) {
     INFLUENZA("influenza"),

@@ -5,6 +5,10 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import kotlinx.android.synthetic.main.most_frequent_symptom.view.mostFrequentSymptom
+import kotlinx.android.synthetic.main.most_frequent_symptom.view.mostFrequentSymptomValue
+import kotlinx.android.synthetic.main.percentage.view.percentageValue
+import kotlinx.android.synthetic.main.total_symptoms.totalSymptomsValue
 import kotlinx.android.synthetic.main.total_tweets.view.tweetsValue
 import version.evening.canvas.flutrack.FlutrackApplication
 import version.evening.canvas.flutrack.R
@@ -31,7 +35,13 @@ class DashboardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.dashboardStatsObservable.subscribe {
-            view.tweetsValue.text = it.numberOfTweets.toString()
+            view.apply {
+                tweetsValue.text = it.numberOfTweets.toString()
+                mostFrequentSymptom.text = it.mostFrequentSymptom
+                mostFrequentSymptomValue.text = it.mostFrequentSymptomNumber.toString()
+                percentageValue.text = it.mostFrequentSymptomPercentange.toString()
+                totalSymptomsValue.text = it.totalSymptoms.toString()
+            }
         }
     }
 }
