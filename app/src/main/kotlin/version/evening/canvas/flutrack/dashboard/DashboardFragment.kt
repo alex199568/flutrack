@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.most_frequent_symptom.view.mostFrequentSymptom
 import kotlinx.android.synthetic.main.most_frequent_symptom.view.mostFrequentSymptomValue
 import kotlinx.android.synthetic.main.percentage.view.percentageValue
@@ -17,6 +19,9 @@ import javax.inject.Inject
 class DashboardFragment : Fragment() {
     @Inject
     lateinit var viewModel: DashboardViewModel
+
+    private val errorSubject = PublishSubject.create<Unit>()
+    val erroObservable: Observable<Unit> = errorSubject
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +39,7 @@ class DashboardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.dashboardStatsObservable.subscribe {
+        viewModel.dashboardStatsObservable.subscribe({
             view.apply {
                 tweetsValue.text = it.numberOfTweets.toString()
                 mostFrequentSymptom.text = it.mostFrequentSymptom
@@ -42,7 +47,9 @@ class DashboardFragment : Fragment() {
                 percentageValue.text = it.mostFrequentSymptomPercentange.toString()
                 totalSymptomsValue.text = it.totalSymptoms.toString()
             }
-        }
+        }, {
+            errorSubject.onNext(Unit)
+        })
     }
 }
 

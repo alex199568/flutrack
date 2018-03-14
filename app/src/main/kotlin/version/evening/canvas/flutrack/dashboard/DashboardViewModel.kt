@@ -5,6 +5,8 @@ import io.reactivex.subjects.ReplaySubject
 import version.evening.canvas.flutrack.SchedulersWrapper
 import kotlin.math.roundToInt
 
+const val PERCENT = 100.0
+
 class DashboardViewModel(model: DashboardModel, schedulersWrapper: SchedulersWrapper) {
     private val dashboardStatsSubject = ReplaySubject.create<DashboardStats>()
     val dashboardStatsObservable: Observable<DashboardStats> = dashboardStatsSubject
@@ -19,10 +21,7 @@ class DashboardViewModel(model: DashboardModel, schedulersWrapper: SchedulersWra
         model.requestAll()
                 .subscribeOn(schedulersWrapper.io())
                 .observeOn(schedulersWrapper.android())
-                .doOnError {
-                    dashboardStatsSubject.onError(it)
-                }
-                .doOnSuccess {
+                .subscribe({
                     try {
                         it.forEach { tweet ->
                             ++totalTweets
@@ -43,15 +42,16 @@ class DashboardViewModel(model: DashboardModel, schedulersWrapper: SchedulersWra
                                 totalTweets,
                                 mostFrequentSymptom.symptom.capitalize(),
                                 mostFrequentNumber,
-                                (mostFrequentNumber.toDouble() / totalSymptoms.toDouble() * 100.0).roundToInt(),
+                                (mostFrequentNumber.toDouble() / totalSymptoms.toDouble() * PERCENT).roundToInt(),
                                 totalSymptoms
                         )
 
                         dashboardStatsSubject.onNext(stats)
-                    } catch (e: Exception) {
+                    } catch (e: IllegalStateException) {
                         dashboardStatsSubject.onError(e)
                     }
-                }
-                .subscribe()
+                }, {
+                    dashboardStatsSubject.onError(it)
+                })
     }
 }

@@ -16,6 +16,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var dataErrorFragment: DataErrorFragment
 
+    private lateinit var lastContentFragment: Fragment
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -39,18 +41,27 @@ class MainActivity : AppCompatActivity() {
                 true
             }
         }
+        bottomNavigation.selectedItemId = R.id.map
 
         setContentFragment(mapFragment)
 
         mapFragment.dataErrorObservable.subscribe {
-            setContentFragment(dataErrorFragment)
+            setErrorFragment(mapFragment)
+        }
+        dashboardFragment.erroObservable.subscribe {
+            setErrorFragment(dashboardFragment)
         }
         dataErrorFragment.retryObservable.subscribe {
-            setContentFragment(mapFragment)
+            setContentFragment(lastContentFragment)
         }
     }
 
     private fun setContentFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().replace(R.id.mainContentContainer, fragment).commit()
+    }
+
+    private fun setErrorFragment(contentFragment: Fragment) {
+        lastContentFragment = contentFragment
+        setContentFragment(dataErrorFragment)
     }
 }

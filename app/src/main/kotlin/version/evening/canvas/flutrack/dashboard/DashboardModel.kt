@@ -1,6 +1,5 @@
 package version.evening.canvas.flutrack.dashboard
 
-import io.reactivex.Observable
 import io.reactivex.Single
 import version.evening.canvas.flutrack.api.FlutrackAll
 

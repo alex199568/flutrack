@@ -12,4 +12,5 @@
     <string name="percentageTitle">% Percentage</string>
     <string name="totalTweetsTitle">Total Tweets</string>
     <string name="totalTweetsSubtitle">Current total of visualized tweets</string>
+    <string name="loading">Loading…</string>
 </resources>

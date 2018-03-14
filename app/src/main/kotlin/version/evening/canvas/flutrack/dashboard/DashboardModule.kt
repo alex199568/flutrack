@@ -13,6 +13,6 @@ class DashboardModule(private val flutrackAll: FlutrackAll, private val schedule
 
     @DashboardScope
     @Provides
-    fun provideDashboardViewModel(model: DashboardModel): DashboardViewModel
-            = DashboardViewModel(model, schedulersWrapper)
+    fun provideDashboardViewModel(model: DashboardModel): DashboardViewModel =
+            DashboardViewModel(model, schedulersWrapper)
 }

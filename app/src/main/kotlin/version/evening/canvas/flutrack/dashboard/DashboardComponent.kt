@@ -7,4 +7,3 @@ import dagger.Component
 interface DashboardComponent {
     fun inject(fragment: DashboardFragment)
 }
-
