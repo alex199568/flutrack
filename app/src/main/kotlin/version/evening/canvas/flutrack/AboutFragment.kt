@@ -1,14 +1,24 @@
 package version.evening.canvas.flutrack
 
+import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.app.Dialog
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.support.v4.app.DialogFragment
 
-class AboutFragment : Fragment() {
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return layoutInflater.inflate(R.layout.fragment_about, container, false)
+class AboutFragment : DialogFragment() {
+    @SuppressLint("InflateParams")
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val builder = AlertDialog.Builder(activity)
+
+        activity?.layoutInflater?.let {
+            builder.setView(it.inflate(R.layout.fragment_about, null))
+        }
+
+        return builder.apply {
+            setPositiveButton(R.string.aboutDialogPositiveButton, { _, _ -> dismiss() })
+            setTitle(R.string.aboutDialogTitle)
+        }.create()
     }
 }
 

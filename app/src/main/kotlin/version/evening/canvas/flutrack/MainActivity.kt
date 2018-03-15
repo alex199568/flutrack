@@ -3,6 +3,8 @@ package version.evening.canvas.flutrack
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.*
 import version.evening.canvas.flutrack.dashboard.DashboardFragment
 import version.evening.canvas.flutrack.dashboard.createDashboardFragment
@@ -31,7 +33,6 @@ class MainActivity : AppCompatActivity() {
             val fragment = when (it.itemId) {
                 R.id.map -> mapFragment
                 R.id.dashboard -> dashboardFragment
-                R.id.about -> aboutFragment
                 else -> null
             }
             if (fragment == null) {
@@ -53,6 +54,21 @@ class MainActivity : AppCompatActivity() {
         }
         dataErrorFragment.retryObservable.subscribe {
             setContentFragment(lastContentFragment)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_action_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.about -> {
+                aboutFragment.show(supportFragmentManager, "about_dialog")
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
