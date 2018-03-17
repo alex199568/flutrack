@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/dashboardColor2"
+    android:background="@color/primaryColor"
     >
 
     <TextView
@@ -19,7 +19,7 @@
         android:paddingBottom="8dp"
         android:paddingTop="8dp"
         android:text="@string/mostFrequestSymptomSubtitle"
-        android:textColor="@color/dashboardColor1"
+        android:textColor="@color/primaryColor"
         android:background="@android:color/white"
         android:fontFamily="@font/oswald_font_family"
         app:layout_constraintBottom_toBottomOf="parent"
