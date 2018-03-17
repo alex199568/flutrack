@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-
-    <color name="dashboardColor1">#3B3B3B</color>
-    <color name="dashboardColor2">#9C3331</color>
+    <color name="primaryColor">#9c3331</color>
+    <color name="primaryLightColor">#d2625b</color>
+    <color name="primaryDarkColor">#68000a</color>
+    <color name="secondaryColor">#3b3b3b</color>
+    <color name="secondaryLightColor">#656565</color>
+    <color name="secondaryDarkColor">#151515</color>
+    <color name="primaryTextColor">#ffffff</color>
+    <color name="secondaryTextColor">#ffffff</color>
 </resources>

@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
 const val FLUTRACK_ALL_BASE_URL = "http://flutrack.org"
 const val CONNECT_TIMEOUT = 60L
 const val READ_TIMEOUT = 300L
-const val MAX_CACHE_SIZE = 1024L * 1024L * 2L
+const val MAX_CACHE_SIZE = 1024L * 1024L * 16L
 
 @Module
 class FlutrackModule {
