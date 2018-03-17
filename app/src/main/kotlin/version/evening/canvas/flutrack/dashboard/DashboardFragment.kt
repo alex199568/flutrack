@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.most_frequent_symptom.view.mostFrequentSymptom
 import kotlinx.android.synthetic.main.most_frequent_symptom.view.mostFrequentSymptomValue
@@ -23,6 +24,8 @@ class DashboardFragment : Fragment() {
     private val errorSubject = PublishSubject.create<Unit>()
     val erroObservable: Observable<Unit> = errorSubject
 
+    private val disposables = CompositeDisposable()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -39,7 +42,7 @@ class DashboardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.dashboardStatsObservable.subscribe({
+        disposables.add(viewModel.dashboardStatsObservable.subscribe({
             view.apply {
                 tweetsValue.text = it.numberOfTweets.toString()
                 mostFrequentSymptom.text = it.mostFrequentSymptom
@@ -47,9 +50,12 @@ class DashboardFragment : Fragment() {
                 percentageValue.text = it.mostFrequentSymptomPercentange.toString()
                 totalSymptomsValue.text = it.totalSymptoms.toString()
             }
-        }, {
-            errorSubject.onNext(Unit)
-        })
+        }, { errorSubject.onNext(Unit) }))
+    }
+
+    override fun onDestroyView() {
+        disposables.clear()
+        super.onDestroyView()
     }
 }
 

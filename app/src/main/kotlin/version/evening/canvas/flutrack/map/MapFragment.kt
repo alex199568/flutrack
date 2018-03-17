@@ -9,6 +9,7 @@ import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_map.*
 import kotlinx.android.synthetic.main.fragment_map.view.*
@@ -24,6 +25,8 @@ class MapFragment : Fragment() {
 
     private val dataErrorSubject = PublishSubject.create<Unit>()
     val dataErrorObservable: Observable<Unit> = dataErrorSubject
+
+    private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,13 +64,18 @@ class MapFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.errorObservable.subscribe {
+        disposables.add(viewModel.errorObservable.subscribe {
             dataErrorSubject.onNext(Unit)
-        }
-        viewModel.firstObservable.subscribe {
+        })
+        disposables.add(viewModel.firstObservable.subscribe {
             mapView.visibility = View.VISIBLE
             mapProgressBar.visibility = View.GONE
-        }
+        })
+    }
+
+    override fun onDestroyView() {
+        disposables.clear()
+        super.onDestroyView()
     }
 
     override fun onStart() {
