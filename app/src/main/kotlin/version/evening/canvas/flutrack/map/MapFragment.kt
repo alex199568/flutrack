@@ -34,8 +34,8 @@ class MapFragment : SupportMapFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = super.onCreateView(inflater, container, savedInstanceState) ?:
-                throw IllegalStateException("google maps didn't create view")
+        val view = super.onCreateView(inflater, container, savedInstanceState)
+                ?: throw IllegalStateException("google maps didn't create view")
 
         val infoWindowAdapter = TweetInfoWindowAdapter(context!!)
 
