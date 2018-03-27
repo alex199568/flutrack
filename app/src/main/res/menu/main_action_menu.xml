@@ -8,4 +8,7 @@
         android:title="@string/action_about"
         app:showAsAction="never"
         />
+    <item
+        android:id="@+id/tempError"
+        android:title="Temp Error"/>
 </menu>

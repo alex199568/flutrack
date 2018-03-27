@@ -7,9 +7,7 @@ import android.view.ViewGroup
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
-import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.subjects.PublishSubject
 import version.evening.canvas.flutrack.FlutrackApplication
 import version.evening.canvas.flutrack.R
 import javax.inject.Inject
@@ -17,9 +15,6 @@ import javax.inject.Inject
 class MapFragment : SupportMapFragment() {
     @Inject
     lateinit var viewModel: MapViewModel
-
-    private val dataErrorSubject = PublishSubject.create<Unit>()
-    val dataErrorObservable: Observable<Unit> = dataErrorSubject
 
     private val disposables = CompositeDisposable()
 
@@ -31,6 +26,8 @@ class MapFragment : SupportMapFragment() {
         DaggerMapComponent.builder().mapModule(MapModule(
                 appComponent.flutrackAll(), appComponent.schedulers()
         )).build().inject(this)
+
+        viewModel.requestTweets()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -53,13 +50,6 @@ class MapFragment : SupportMapFragment() {
         }
 
         return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        disposables.add(viewModel.errorObservable.subscribe {
-            dataErrorSubject.onNext(Unit)
-        })
     }
 
     override fun onDestroyView() {

@@ -6,7 +6,7 @@ import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
 import version.evening.canvas.flutrack.doOnFirst
 
-class MapViewModel(model: MapModel, schedulersWrapper: version.evening.canvas.flutrack.SchedulersWrapper) {
+class MapViewModel(private val model: MapModel, private val schedulersWrapper: version.evening.canvas.flutrack.SchedulersWrapper) {
     private val tweetsSubject: Subject<MapTweet> = ReplaySubject.create()
     private val errorSubject: Subject<Unit> = BehaviorSubject.create()
     private val firstSubject: Subject<Unit> = BehaviorSubject.create()
@@ -15,7 +15,7 @@ class MapViewModel(model: MapModel, schedulersWrapper: version.evening.canvas.fl
     val errorObservable: Observable<Unit> = errorSubject
     val firstObservable: Observable<Unit> = firstSubject
 
-    init {
+    fun requestTweets() {
         model
                 .requestAll()
                 .subscribeOn(schedulersWrapper.io())

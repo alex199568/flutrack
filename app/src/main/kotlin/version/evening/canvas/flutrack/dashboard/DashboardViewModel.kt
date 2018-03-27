@@ -1,5 +1,6 @@
 package version.evening.canvas.flutrack.dashboard
 
+import android.os.Bundle
 import io.reactivex.Observable
 import io.reactivex.subjects.ReplaySubject
 import version.evening.canvas.flutrack.SchedulersWrapper
@@ -7,7 +8,9 @@ import kotlin.math.roundToInt
 
 const val PERCENT = 100.0
 
-class DashboardViewModel(model: DashboardModel, schedulersWrapper: SchedulersWrapper) {
+const val STATS_KEY = "Stats"
+
+class DashboardViewModel(private val model: DashboardModel, private val schedulersWrapper: SchedulersWrapper) {
     private val dashboardStatsSubject = ReplaySubject.create<DashboardStats>()
     val dashboardStatsObservable: Observable<DashboardStats> = dashboardStatsSubject
 
@@ -15,7 +18,17 @@ class DashboardViewModel(model: DashboardModel, schedulersWrapper: SchedulersWra
     private var totalSymptoms = 0
     private val symptomsCounter = mutableMapOf<Symptom, Int>()
 
-    init {
+    private lateinit var stats: DashboardStats
+
+    private var stateRestored = false
+
+    val dashboardStats: DashboardStats by lazy { stats }
+
+    fun requestDashboardStats() {
+        if (stateRestored) {
+            return
+        }
+
         Symptom.values().forEach { symptomsCounter[it] = 0 }
 
         model.requestAll()
@@ -38,7 +51,7 @@ class DashboardViewModel(model: DashboardModel, schedulersWrapper: SchedulersWra
                                 ?: throw IllegalStateException("no most frequent symptom")
                         val mostFrequentNumber = mostFrequent.value
 
-                        val stats = DashboardStats(
+                        stats = DashboardStats(
                                 totalTweets,
                                 mostFrequentSymptom.symptom.capitalize(),
                                 mostFrequentNumber,
@@ -53,5 +66,11 @@ class DashboardViewModel(model: DashboardModel, schedulersWrapper: SchedulersWra
                 }, {
                     dashboardStatsSubject.onError(it)
                 })
+    }
+
+    fun restoreStats(savedState: Bundle) {
+        stateRestored = true
+        stats = savedState.getParcelable(STATS_KEY)
+        dashboardStatsSubject.onNext(stats)
     }
 }
