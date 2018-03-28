@@ -41,7 +41,6 @@ class MapViewModelTest {
         }
 
         var numOfTweets = 0
-
         mapViewModel.tweetsObservable.subscribe {
             val compareWith = when (numOfTweets++) {
                 0 -> tweet1
@@ -50,21 +49,7 @@ class MapViewModelTest {
             }
             assertEquals(compareWith, it)
         }
-        assertEquals(2, numOfTweets)
-    }
-
-    @Test
-    fun testOnFirst() {
-        tweetsSubject.apply {
-            onNext(tweet1)
-            onNext(tweet2)
-        }
-
-        var timesOnFirstCalled = 0
-
-        mapViewModel.firstObservable.subscribe { ++timesOnFirstCalled }
-
-        assertEquals(1, timesOnFirstCalled)
+        mapViewModel.requestTweets()
     }
 
     @Test
@@ -73,6 +58,7 @@ class MapViewModelTest {
 
         var timesOnErrorCalled = 0
 
+        mapViewModel.requestTweets()
         mapViewModel.errorObservable.subscribe { ++timesOnErrorCalled }
 
         assertEquals(1, timesOnErrorCalled)

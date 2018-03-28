@@ -16,7 +16,7 @@ class AboutFragment : DialogFragment() {
         }
 
         return builder.apply {
-            setPositiveButton(R.string.aboutDialogPositiveButton, { _, _ -> dismiss() })
+            setPositiveButton(R.string.aboutDialogPositiveButton, null)
             setTitle(R.string.aboutDialogTitle)
         }.create()
     }

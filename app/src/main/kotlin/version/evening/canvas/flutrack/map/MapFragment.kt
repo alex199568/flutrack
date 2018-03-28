@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
 import version.evening.canvas.flutrack.FlutrackApplication
 import version.evening.canvas.flutrack.R
 import javax.inject.Inject
@@ -15,6 +17,9 @@ import javax.inject.Inject
 class MapFragment : SupportMapFragment() {
     @Inject
     lateinit var viewModel: MapViewModel
+
+    private val errorSubject = BehaviorSubject.create<Unit>()
+    val errorObservable: Observable<Unit> = errorSubject
 
     private val disposables = CompositeDisposable()
 
@@ -31,25 +36,31 @@ class MapFragment : SupportMapFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = super.onCreateView(inflater, container, savedInstanceState)
+        return super.onCreateView(inflater, container, savedInstanceState)
                 ?: throw IllegalStateException("google maps didn't create view")
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val infoWindowAdapter = TweetInfoWindowAdapter(context!!)
-
         getMapAsync { map ->
-            viewModel.tweetsObservable.subscribe {
+            disposables.add(viewModel.tweetsObservable.subscribe({
                 val markerOptions = MarkerOptions().apply {
                     position(it.latLng)
                 }
                 val marker = map.addMarker(markerOptions)
                 infoWindowAdapter.registerMarkerData(marker, it)
-            }
+            }))
+
             map.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style))
             map.setInfoWindowAdapter(infoWindowAdapter)
             map.uiSettings.isMapToolbarEnabled = false
         }
+        super.onViewCreated(view, savedInstanceState)
+    }
 
-        return view
+    override fun onActivityCreated(p0: Bundle?) {
+        super.onActivityCreated(p0)
+        viewModel.errorObservable.subscribe { errorSubject.onNext(Unit) }
     }
 
     override fun onDestroyView() {

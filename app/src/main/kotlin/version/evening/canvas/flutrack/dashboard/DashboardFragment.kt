@@ -5,7 +5,9 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.most_frequent_symptom.view.mostFrequentSymptom
 import kotlinx.android.synthetic.main.most_frequent_symptom.view.mostFrequentSymptomValue
 import kotlinx.android.synthetic.main.percentage.view.percentageValue
@@ -18,6 +20,9 @@ import javax.inject.Inject
 class DashboardFragment : Fragment() {
     @Inject
     lateinit var viewModel: DashboardViewModel
+
+    private val errorSubject = BehaviorSubject.create<Unit>()
+    val errorObservable: Observable<Unit> = errorSubject
 
     private val disposables = CompositeDisposable()
 
@@ -51,7 +56,7 @@ class DashboardFragment : Fragment() {
                 percentageValue.text = it.mostFrequentSymptomPercentange.toString()
                 totalSymptomsValue.text = it.totalSymptoms.toString()
             }
-        }))
+        }, { errorSubject.onNext(Unit) }))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
