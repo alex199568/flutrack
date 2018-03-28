@@ -53,7 +53,7 @@ class DashboardFragment : Fragment() {
                 tweetsValue.text = it.numberOfTweets.toString()
                 mostFrequentSymptom.text = it.mostFrequentSymptom
                 mostFrequentSymptomValue.text = it.mostFrequentSymptomNumber.toString()
-                percentageValue.text = it.mostFrequentSymptomPercentange.toString()
+                percentageValue.text = it.mostFrequentSymptomPercentage.toString()
                 totalSymptomsValue.text = it.totalSymptoms.toString()
             }
         }, { errorSubject.onNext(Unit) }))
