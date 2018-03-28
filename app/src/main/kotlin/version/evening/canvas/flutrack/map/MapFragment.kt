@@ -9,7 +9,7 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.BehaviorSubject
 import version.evening.canvas.flutrack.FlutrackApplication
 import version.evening.canvas.flutrack.R
 import javax.inject.Inject
@@ -18,8 +18,8 @@ class MapFragment : SupportMapFragment() {
     @Inject
     lateinit var viewModel: MapViewModel
 
-    private val dataErrorSubject = PublishSubject.create<Unit>()
-    val dataErrorObservable: Observable<Unit> = dataErrorSubject
+    private val errorSubject = BehaviorSubject.create<Unit>()
+    val errorObservable: Observable<Unit> = errorSubject
 
     private val disposables = CompositeDisposable()
 
@@ -31,35 +31,36 @@ class MapFragment : SupportMapFragment() {
         DaggerMapComponent.builder().mapModule(MapModule(
                 appComponent.flutrackAll(), appComponent.schedulers()
         )).build().inject(this)
+
+        viewModel.requestTweets()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = super.onCreateView(inflater, container, savedInstanceState)
+        return super.onCreateView(inflater, container, savedInstanceState)
                 ?: throw IllegalStateException("google maps didn't create view")
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val infoWindowAdapter = TweetInfoWindowAdapter(context!!)
-
         getMapAsync { map ->
-            viewModel.tweetsObservable.subscribe {
+            disposables.add(viewModel.tweetsObservable.subscribe({
                 val markerOptions = MarkerOptions().apply {
                     position(it.latLng)
                 }
                 val marker = map.addMarker(markerOptions)
                 infoWindowAdapter.registerMarkerData(marker, it)
-            }
+            }))
+
             map.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style))
             map.setInfoWindowAdapter(infoWindowAdapter)
             map.uiSettings.isMapToolbarEnabled = false
         }
-
-        return view
+        super.onViewCreated(view, savedInstanceState)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        disposables.add(viewModel.errorObservable.subscribe {
-            dataErrorSubject.onNext(Unit)
-        })
+    override fun onActivityCreated(p0: Bundle?) {
+        super.onActivityCreated(p0)
+        viewModel.errorObservable.subscribe { errorSubject.onNext(Unit) }
     }
 
     override fun onDestroyView() {

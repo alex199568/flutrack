@@ -59,7 +59,7 @@ class DashboardViewModelTest {
     @Test
     fun testMostFrequentSymptomPercentage() {
         viewModel.dashboardStatsObservable.subscribe {
-            assertEquals(50, it.mostFrequentSymptomPercentange)
+            assertEquals(50, it.mostFrequentSymptomPercentage)
         }
     }
 }

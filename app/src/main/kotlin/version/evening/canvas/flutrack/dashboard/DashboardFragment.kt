@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.most_frequent_symptom.view.mostFrequentSymptom
 import kotlinx.android.synthetic.main.most_frequent_symptom.view.mostFrequentSymptomValue
 import kotlinx.android.synthetic.main.percentage.view.percentageValue
@@ -21,8 +21,8 @@ class DashboardFragment : Fragment() {
     @Inject
     lateinit var viewModel: DashboardViewModel
 
-    private val errorSubject = PublishSubject.create<Unit>()
-    val erroObservable: Observable<Unit> = errorSubject
+    private val errorSubject = BehaviorSubject.create<Unit>()
+    val errorObservable: Observable<Unit> = errorSubject
 
     private val disposables = CompositeDisposable()
 
@@ -34,6 +34,12 @@ class DashboardFragment : Fragment() {
         DaggerDashboardComponent.builder().dashboardModule(DashboardModule(
                 appComponent.flutrackAll(), appComponent.schedulers()
         )).build().inject(this)
+
+        if (savedInstanceState == null) {
+            viewModel.requestDashboardStats()
+        } else {
+            viewModel.restoreStats(savedInstanceState)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -47,10 +53,15 @@ class DashboardFragment : Fragment() {
                 tweetsValue.text = it.numberOfTweets.toString()
                 mostFrequentSymptom.text = it.mostFrequentSymptom
                 mostFrequentSymptomValue.text = it.mostFrequentSymptomNumber.toString()
-                percentageValue.text = it.mostFrequentSymptomPercentange.toString()
+                percentageValue.text = it.mostFrequentSymptomPercentage.toString()
                 totalSymptomsValue.text = it.totalSymptoms.toString()
             }
         }, { errorSubject.onNext(Unit) }))
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(STATS_KEY, viewModel.dashboardStats)
     }
 
     override fun onDestroyView() {

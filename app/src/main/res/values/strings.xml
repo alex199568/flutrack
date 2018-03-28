@@ -20,4 +20,7 @@
     <string name="poweredBy">Powered by http://www.flutrack.org/</string>
     <string name="sourceCode">Source code https://github.com/alex199568/flutrack</string>
     <string name="contactMe">Contact me sasha.199568@gmail.com</string>
+    <string name="errorDialogTitle">¯\\_(ツ)_/¯</string>
+    <string name="errorDialogMessage">Oops, something went wrong</string>
+    <string name="errorDialogButton">Try again</string>
 </resources>
