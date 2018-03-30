@@ -1,6 +1,6 @@
 package version.evening.canvas.flutrack.dashboard
 
-import version.evening.canvas.flutrack.api.FluTweet
+import version.evening.canvas.flutrack.data.FluTweet
 
 data class DashboardTweet(
         val text: String

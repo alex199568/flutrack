@@ -1,4 +1,4 @@
-package version.evening.canvas.flutrack.api
+package version.evening.canvas.flutrack.data
 
 import com.google.gson.annotations.SerializedName
 

@@ -1,7 +1,7 @@
 package version.evening.canvas.flutrack.dashboard
 
 import io.reactivex.Single
-import version.evening.canvas.flutrack.api.FlutrackAll
+import version.evening.canvas.flutrack.data.FlutrackAll
 
 class DashboardModel(private val flutrackAll: FlutrackAll) {
     fun requestAll(): Single<List<DashboardTweet>> =

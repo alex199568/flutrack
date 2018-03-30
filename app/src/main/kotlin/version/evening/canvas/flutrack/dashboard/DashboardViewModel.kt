@@ -14,6 +14,9 @@ class DashboardViewModel(private val model: DashboardModel, private val schedule
     private val dashboardStatsSubject = ReplaySubject.create<DashboardStats>()
     val dashboardStatsObservable: Observable<DashboardStats> = dashboardStatsSubject
 
+    private val errorSubject = ReplaySubject.create<Unit>()
+    val errorObservable: Observable<Unit> = errorSubject
+
     private var totalTweets = 0
     private var totalSymptoms = 0
     private val symptomsCounter = mutableMapOf<Symptom, Int>()
@@ -22,7 +25,7 @@ class DashboardViewModel(private val model: DashboardModel, private val schedule
 
     private var stateRestored = false
 
-    val dashboardStats: DashboardStats by lazy { stats }
+    val dashboardStats: DashboardStats? by lazy { if (::stats.isInitialized) stats else null }
 
     fun requestDashboardStats() {
         if (stateRestored) {
@@ -63,14 +66,16 @@ class DashboardViewModel(private val model: DashboardModel, private val schedule
                     } catch (e: IllegalStateException) {
                         dashboardStatsSubject.onError(e)
                     }
-                }, {
-                    dashboardStatsSubject.onError(it)
-                })
+                }, { errorSubject.onNext(Unit) })
     }
 
     fun restoreStats(savedState: Bundle) {
         stateRestored = true
-        stats = savedState.getParcelable(STATS_KEY)
-        dashboardStatsSubject.onNext(stats)
+        savedState.getParcelable<DashboardStats>(STATS_KEY)?.let {
+            stats = it
+            dashboardStatsSubject.onNext(stats)
+            return
+        }
+        errorSubject.onNext(Unit)
     }
 }

@@ -2,7 +2,7 @@ package version.evening.canvas.flutrack.map
 
 import com.google.android.gms.maps.model.LatLng
 import version.evening.canvas.flutrack.toBooleanExtra
-import version.evening.canvas.flutrack.api.FluTweet
+import version.evening.canvas.flutrack.data.FluTweet
 import version.evening.canvas.flutrack.defaultDateFormat
 import version.evening.canvas.flutrack.millisToReadableDate
 import java.util.Calendar

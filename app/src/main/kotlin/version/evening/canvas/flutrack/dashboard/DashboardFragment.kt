@@ -21,10 +21,10 @@ class DashboardFragment : Fragment() {
     @Inject
     lateinit var viewModel: DashboardViewModel
 
+    private val disposables = CompositeDisposable()
+
     private val errorSubject = BehaviorSubject.create<Unit>()
     val errorObservable: Observable<Unit> = errorSubject
-
-    private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +34,8 @@ class DashboardFragment : Fragment() {
         DaggerDashboardComponent.builder().dashboardModule(DashboardModule(
                 appComponent.flutrackAll(), appComponent.schedulers()
         )).build().inject(this)
+
+        disposables.add(viewModel.errorObservable.subscribe { errorSubject.onNext(it) })
 
         if (savedInstanceState == null) {
             viewModel.requestDashboardStats()
@@ -56,17 +58,23 @@ class DashboardFragment : Fragment() {
                 percentageValue.text = it.mostFrequentSymptomPercentage.toString()
                 totalSymptomsValue.text = it.totalSymptoms.toString()
             }
-        }, { errorSubject.onNext(Unit) }))
+        }))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putParcelable(STATS_KEY, viewModel.dashboardStats)
+        viewModel.dashboardStats?.let {
+            outState.putParcelable(STATS_KEY, it)
+        }
     }
 
     override fun onDestroyView() {
         disposables.clear()
         super.onDestroyView()
+    }
+
+    fun retry() {
+        viewModel.requestDashboardStats()
     }
 }
 

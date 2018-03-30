@@ -7,8 +7,8 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations.initMocks
-import version.evening.canvas.flutrack.api.FluTweet
-import version.evening.canvas.flutrack.api.FlutrackAll
+import version.evening.canvas.flutrack.data.FluTweet
+import version.evening.canvas.flutrack.data.FlutrackAll
 
 class MapModelTest {
     @Mock

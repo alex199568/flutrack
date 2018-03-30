@@ -1,4 +1,4 @@
-package version.evening.canvas.flutrack.api
+package version.evening.canvas.flutrack.data
 
 import android.content.Context
 import com.google.gson.Gson
@@ -55,4 +55,8 @@ class FlutrackModule {
                     .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
                     .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
                     .build()
+
+    @AppScope
+    @Provides
+    fun provideMemoryFlutweetsStorage(): MemoryFlutweetsStorage = MemoryFlutweetsStorage()
 }

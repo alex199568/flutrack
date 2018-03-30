@@ -10,18 +10,21 @@ import com.google.android.gms.maps.model.MarkerOptions
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
+import version.evening.canvas.flutrack.ErrorDialogFragment
 import version.evening.canvas.flutrack.FlutrackApplication
 import version.evening.canvas.flutrack.R
 import javax.inject.Inject
+
+private const val ERROR_TAG = "map_error_dialog"
 
 class MapFragment : SupportMapFragment() {
     @Inject
     lateinit var viewModel: MapViewModel
 
+    private val disposables = CompositeDisposable()
+
     private val errorSubject = BehaviorSubject.create<Unit>()
     val errorObservable: Observable<Unit> = errorSubject
-
-    private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +34,8 @@ class MapFragment : SupportMapFragment() {
         DaggerMapComponent.builder().mapModule(MapModule(
                 appComponent.flutrackAll(), appComponent.schedulers()
         )).build().inject(this)
+
+        disposables.add(viewModel.errorObservable.subscribe { errorSubject.onNext(Unit) })
 
         viewModel.requestTweets()
     }
@@ -43,13 +48,13 @@ class MapFragment : SupportMapFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val infoWindowAdapter = TweetInfoWindowAdapter(context!!)
         getMapAsync { map ->
-            disposables.add(viewModel.tweetsObservable.subscribe({
+            disposables.add(viewModel.tweetsObservable.subscribe {
                 val markerOptions = MarkerOptions().apply {
                     position(it.latLng)
                 }
                 val marker = map.addMarker(markerOptions)
                 infoWindowAdapter.registerMarkerData(marker, it)
-            }))
+            })
 
             map.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style))
             map.setInfoWindowAdapter(infoWindowAdapter)
@@ -58,14 +63,13 @@ class MapFragment : SupportMapFragment() {
         super.onViewCreated(view, savedInstanceState)
     }
 
-    override fun onActivityCreated(p0: Bundle?) {
-        super.onActivityCreated(p0)
-        viewModel.errorObservable.subscribe { errorSubject.onNext(Unit) }
-    }
-
     override fun onDestroyView() {
         disposables.clear()
         super.onDestroyView()
+    }
+
+    fun retry() {
+        viewModel.requestTweets()
     }
 }
 

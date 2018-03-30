@@ -1,4 +1,4 @@
-package version.evening.canvas.flutrack.api
+package version.evening.canvas.flutrack.data
 
 import io.reactivex.Observable
 import retrofit2.http.GET
