@@ -14,8 +14,7 @@ class MainAdapter(
     }
 
     override fun getCount(): Int {
-        return 0
-//        return fragments.size
+        return fragments.size
     }
 
     override fun getPageTitle(position: Int): CharSequence? {

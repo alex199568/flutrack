@@ -15,6 +15,8 @@ class MainPresenter(
     private val disposables = CompositeDisposable()
     private val dependentPresenters = mutableListOf<BaseContract.Presenter>()
 
+    private var presentersNotified = false
+
     override fun start() {
         disposables.add(flutrackAll
                 .results()
@@ -23,15 +25,20 @@ class MainPresenter(
                 .subscribe({
                     memoryStorage.save(it)
                     dependentPresenters.forEach { it.start() }
+                    presentersNotified = true
                 }, { view.showErrorDialog() }))
     }
 
     override fun stop() {
+        presentersNotified = false
         disposables.clear()
     }
 
     override fun registerDependentPresenter(presenter: BaseContract.Presenter) {
         dependentPresenters.add(presenter)
+        if (presentersNotified) {
+            presenter.start()
+        }
     }
 
     override fun actionAbout() {
