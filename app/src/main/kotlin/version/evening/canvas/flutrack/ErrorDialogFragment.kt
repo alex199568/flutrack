@@ -15,6 +15,8 @@ class ErrorDialogFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val context = context ?: throw IllegalStateException("attempting to show dialog with null context")
 
+        isCancelable = false
+
         return AlertDialog.Builder(context).apply {
             setPositiveButton(R.string.errorDialogButton, { _, _ -> retrySubject.onNext(Unit) })
             setTitle(R.string.errorDialogTitle)

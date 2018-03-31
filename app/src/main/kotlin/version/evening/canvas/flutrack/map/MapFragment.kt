@@ -4,35 +4,36 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
-import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.subjects.BehaviorSubject
 import version.evening.canvas.flutrack.FlutrackApplication
 import version.evening.canvas.flutrack.R
+import version.evening.canvas.flutrack.main.MainActivity
 import javax.inject.Inject
 
-class MapFragment : SupportMapFragment() {
+class MapFragment : SupportMapFragment(), MapContract.View {
     @Inject
-    lateinit var viewModel: MapViewModel
+    lateinit var presenter: MapContract.Presenter
 
-    private val errorSubject = BehaviorSubject.create<Unit>()
-    val errorObservable: Observable<Unit> = errorSubject
-
-    private val disposables = CompositeDisposable()
+    private lateinit var map: GoogleMap
+    private lateinit var infoWindowAdapter: TweetInfoWindowAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val appComponent = (activity?.application as FlutrackApplication).appComponent
 
-        DaggerMapComponent.builder().mapModule(MapModule(
-                appComponent.flutrackAll(), appComponent.schedulers()
-        )).build().inject(this)
+        DaggerMapComponent.builder()
+                .appComponent(appComponent)
+                .mapModule(MapModule(this))
+                .build().inject(this)
+    }
 
-        viewModel.requestTweets()
+    override fun onActivityCreated(p0: Bundle?) {
+        super.onActivityCreated(p0)
+        (activity as MainActivity).presenter.registerDependentPresenter(presenter)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -41,32 +42,34 @@ class MapFragment : SupportMapFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val infoWindowAdapter = TweetInfoWindowAdapter(context!!)
-        getMapAsync { map ->
-            disposables.add(viewModel.tweetsObservable.subscribe({
-                val markerOptions = MarkerOptions().apply {
-                    position(it.latLng)
-                }
-                val marker = map.addMarker(markerOptions)
-                infoWindowAdapter.registerMarkerData(marker, it)
-            }))
-
-            map.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style))
-            map.setInfoWindowAdapter(infoWindowAdapter)
-            map.uiSettings.isMapToolbarEnabled = false
+        getMapAsync {
+            map = it.apply {
+                setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style))
+                uiSettings.isMapToolbarEnabled = false
+            }
+            context?.let {
+                infoWindowAdapter = TweetInfoWindowAdapter(it)
+                presenter.onViewIsReady()
+                map.setInfoWindowAdapter(infoWindowAdapter)
+            }
         }
         super.onViewCreated(view, savedInstanceState)
     }
 
-    override fun onActivityCreated(p0: Bundle?) {
-        super.onActivityCreated(p0)
-        viewModel.errorObservable.subscribe { errorSubject.onNext(Unit) }
+    override fun showMapTweet(mapTweet: MapTweet): Boolean {
+        if (!this::infoWindowAdapter.isInitialized) {
+            return false
+        }
+        val markerOptions = MarkerOptions().apply {
+            position(mapTweet.latLng)
+        }
+        val marker = map.addMarker(markerOptions)
+        infoWindowAdapter.registerMarkerData(marker, mapTweet)
+        return true
     }
 
     override fun onDestroyView() {
-        disposables.clear()
+        presenter.stop()
         super.onDestroyView()
     }
 }
-
-fun createMapFragment(): MapFragment = MapFragment()
