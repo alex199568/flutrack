@@ -31,6 +31,7 @@ class MainPresenter(
     }
 
     override fun stop() {
+        memoryStorage.clear()
         presentersNotified = false
         disposables.clear()
     }
