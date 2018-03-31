@@ -12,4 +12,8 @@ class MemoryFlutweetsStorage {
     fun loadAll(): List<FluTweet> = tweets
 
     fun asObservable(): Observable<FluTweet> = Observable.fromIterable(tweets)
+
+    fun clear() {
+        tweets.clear()
+    }
 }

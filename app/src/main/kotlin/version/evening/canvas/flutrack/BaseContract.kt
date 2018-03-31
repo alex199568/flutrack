@@ -9,5 +9,6 @@ interface BaseContract {
         fun start()
         fun stop()
         fun saveState(outState: Bundle) = Unit
+        fun restoreState(state: Bundle) = Unit
     }
 }

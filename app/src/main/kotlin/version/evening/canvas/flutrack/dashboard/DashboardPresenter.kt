@@ -1,29 +1,36 @@
 package version.evening.canvas.flutrack.dashboard
 
+import android.os.Bundle
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import version.evening.canvas.flutrack.SchedulersWrapper
+import version.evening.canvas.flutrack.data.FluTweet
 import version.evening.canvas.flutrack.data.MemoryFlutweetsStorage
 import kotlin.math.roundToInt
 
-private const val PERCENT = 100.0
+private const val STATS_KEY = "DashboardStats"
 
 class DashboardPresenter(
         private val storage: MemoryFlutweetsStorage,
         private val schedulers: SchedulersWrapper,
         private val view: DashboardContract.View
 ) : DashboardContract.Presenter {
-    private var totalTweets = 0
-    private var totalSymptoms = 0
-
     private val disposables = CompositeDisposable()
 
+    private var stats: DashboardStats? = null
+
     override fun start() {
+        if (stats != null) {
+            return
+        }
         disposables.add(
                 processTweets()
                         .subscribeOn(schedulers.io())
                         .observeOn(schedulers.android())
-                        .subscribe { stats -> view.showStats(stats) }
+                        .subscribe { stats ->
+                            this.stats = stats
+                            view.showStats(stats)
+                        }
         )
     }
 
@@ -31,32 +38,26 @@ class DashboardPresenter(
         disposables.clear()
     }
 
-    private fun processTweets(): Single<DashboardStats> {
-        return storage.asObservable().collect({
-            val symptomsState = mutableMapOf<Symptom, Int>()
-            Symptom.values().forEach { symptomsState[it] = 0 }
-            symptomsState
-        }, { state, tweet ->
-            ++totalTweets
-            Symptom.values().forEach {
-                if (tweet.tweetText?.contains(it.symptom, true) == true) {
-                    state[it] = state[it]?.plus(1) ?: 0
-                    ++totalSymptoms
-                }
-            }
-        }).map {
-            val mostFrequent = it.maxBy { it.value }
-            val mostFrequentSymptom = mostFrequent?.key
-                    ?: throw IllegalStateException("no most frequent symptom")
-            val mostFrequentNumber = mostFrequent.value
-
-            DashboardStats(
-                    totalTweets,
-                    mostFrequentSymptom.symptom.capitalize(),
-                    mostFrequentNumber,
-                    (mostFrequentNumber.toDouble() / totalSymptoms.toDouble() * PERCENT).roundToInt(),
-                    totalSymptoms
-            )
+    override fun saveState(outState: Bundle) {
+        if (stats != null) {
+            outState.putParcelable(STATS_KEY, stats)
+            stats = null
         }
+    }
+
+    override fun restoreState(state: Bundle) {
+        if (stats != null) {
+            return
+        }
+        state.getParcelable<DashboardStats>(STATS_KEY)?.let {
+            stats = it
+            view.showStats(it)
+        }
+    }
+
+    private fun processTweets(): Single<DashboardStats> {
+        return storage.asObservable()
+                .collect({ DashboardStatsState() }, { state, tweet -> state.processTweet(tweet) })
+                .map { it.asDashboardStats() }
     }
 }

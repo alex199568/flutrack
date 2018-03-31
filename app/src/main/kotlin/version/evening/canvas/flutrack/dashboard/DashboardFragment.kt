@@ -28,8 +28,9 @@ class DashboardFragment : Fragment(), DashboardContract.View {
                 .build().inject(this)
     }
 
-    override fun onActivityCreated(p0: Bundle?) {
-        super.onActivityCreated(p0)
+    override fun onActivityCreated(state: Bundle?) {
+        super.onActivityCreated(state)
+        state?.let { presenter.restoreState(it) }
         (activity as MainActivity).presenter.registerDependentPresenter(presenter)
     }
 
@@ -40,6 +41,11 @@ class DashboardFragment : Fragment(), DashboardContract.View {
     override fun onDestroyView() {
         presenter.stop()
         super.onDestroyView()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        presenter.saveState(outState)
+        super.onSaveInstanceState(outState)
     }
 
     override fun showStats(stats: DashboardStats) {

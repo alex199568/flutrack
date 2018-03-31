@@ -33,6 +33,7 @@ class MapPresenter(
     }
 
     override fun stop() {
+        storage.clear()
         disposable.clear()
     }
 }
