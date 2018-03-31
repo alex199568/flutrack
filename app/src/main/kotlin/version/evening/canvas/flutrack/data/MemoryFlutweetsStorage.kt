@@ -9,8 +9,6 @@ class MemoryFlutweetsStorage {
         this.tweets.addAll(tweets)
     }
 
-    fun loadAll(): List<FluTweet> = tweets
-
     fun asObservable(): Observable<FluTweet> = Observable.fromIterable(tweets)
 
     fun clear() {
