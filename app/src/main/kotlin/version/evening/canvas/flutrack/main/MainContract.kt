@@ -6,6 +6,7 @@ interface MainContract : BaseContract {
     interface View : BaseContract.View {
         fun showAboutDialog()
         fun showErrorDialog()
+        fun dismissErrorDialog()
     }
 
     interface Presenter : BaseContract.Presenter {

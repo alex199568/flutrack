@@ -26,7 +26,10 @@ class DashboardFragment : Fragment(), DashboardContract.View {
                 .appComponent((activity?.application as FlutrackApplication).appComponent)
                 .dashboardModule(DashboardModule(this))
                 .build().inject(this)
+    }
 
+    override fun onActivityCreated(p0: Bundle?) {
+        super.onActivityCreated(p0)
         (activity as MainActivity).presenter.registerDependentPresenter(presenter)
     }
 

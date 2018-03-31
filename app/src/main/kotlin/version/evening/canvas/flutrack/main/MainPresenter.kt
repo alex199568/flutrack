@@ -1,5 +1,6 @@
 package version.evening.canvas.flutrack.main
 
+import android.os.Bundle
 import io.reactivex.disposables.CompositeDisposable
 import version.evening.canvas.flutrack.BaseContract
 import version.evening.canvas.flutrack.SchedulersWrapper
@@ -32,6 +33,10 @@ class MainPresenter(
     override fun stop() {
         presentersNotified = false
         disposables.clear()
+    }
+
+    override fun saveState(outState: Bundle) {
+        view.dismissErrorDialog()
     }
 
     override fun registerDependentPresenter(presenter: BaseContract.Presenter) {
