@@ -49,7 +49,6 @@ class MapPresenterTest {
         verify(view).showMapTweet(MapTweet(tweet2))
     }
 
-
     @Test
     fun testOnViewIsReady() {
         `when`(storage.asObservable()).thenReturn(Observable.fromArray(tweet1, tweet2))
