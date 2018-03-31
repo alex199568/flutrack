@@ -29,7 +29,6 @@ class MapFragment : SupportMapFragment(), MapContract.View {
                 .appComponent(appComponent)
                 .mapModule(MapModule(this))
                 .build().inject(this)
-
     }
 
     override fun onActivityCreated(p0: Bundle?) {
@@ -53,7 +52,6 @@ class MapFragment : SupportMapFragment(), MapContract.View {
                 presenter.onViewIsReady()
                 map.setInfoWindowAdapter(infoWindowAdapter)
             }
-
         }
         super.onViewCreated(view, savedInstanceState)
     }

@@ -4,9 +4,7 @@ import android.os.Bundle
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import version.evening.canvas.flutrack.SchedulersWrapper
-import version.evening.canvas.flutrack.data.FluTweet
 import version.evening.canvas.flutrack.data.MemoryFlutweetsStorage
-import kotlin.math.roundToInt
 
 private const val STATS_KEY = "DashboardStats"
 

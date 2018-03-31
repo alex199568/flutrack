@@ -21,4 +21,3 @@ class MainAdapter(
         return titles[position]
     }
 }
-
