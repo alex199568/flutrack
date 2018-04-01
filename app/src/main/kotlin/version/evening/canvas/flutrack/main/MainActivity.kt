@@ -11,7 +11,9 @@ import version.evening.canvas.flutrack.ErrorDialogFragment
 import version.evening.canvas.flutrack.FlutrackApplication
 import version.evening.canvas.flutrack.R
 import version.evening.canvas.flutrack.dashboard.DashboardFragment
+import version.evening.canvas.flutrack.dashboard.addDashboardFragment
 import version.evening.canvas.flutrack.map.MapFragment
+import version.evening.canvas.flutrack.map.addMapFragment
 import javax.inject.Inject
 
 private const val ABOUT_TAG = "about_dialog"
@@ -55,11 +57,16 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         dashboardFragment = DashboardFragment()
         mapFragment = MapFragment()
 
-        viewPager.adapter = MainAdapter(
-                listOf(mapFragment, dashboardFragment),
-                listOf(getString(R.string.bottom_navigation_map), getString(R.string.bottom_navigation_dashboard)),
-                supportFragmentManager
-        )
+        if (resources.getBoolean(R.bool.isTablet)) {
+            addMapFragment(supportFragmentManager, R.id.mapContainer)
+            addDashboardFragment(supportFragmentManager, R.id.dashboardContainer)
+        } else {
+            viewPager?.adapter = MainAdapter(
+                    listOf(mapFragment, dashboardFragment),
+                    listOf(getString(R.string.bottom_navigation_map), getString(R.string.bottom_navigation_dashboard)),
+                    supportFragmentManager
+            )
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
