@@ -2,6 +2,7 @@ package version.evening.canvas.flutrack.dashboard
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,12 +16,22 @@ import version.evening.canvas.flutrack.R
 import version.evening.canvas.flutrack.main.MainActivity
 import javax.inject.Inject
 
+private const val TAG = "dashboard"
+
+fun addDashboardFragment(fragmentManager: FragmentManager, container: Int) {
+    if (fragmentManager.findFragmentByTag(TAG) == null) {
+        fragmentManager.beginTransaction().add(container, DashboardFragment(), TAG).commit()
+    }
+}
+
 class DashboardFragment : Fragment(), DashboardContract.View {
     @Inject
     lateinit var presenter: DashboardContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        retainInstance = true
 
         DaggerDashboardComponent.builder()
                 .appComponent((activity?.application as FlutrackApplication).appComponent)

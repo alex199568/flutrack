@@ -1,6 +1,7 @@
 package version.evening.canvas.flutrack.map
 
 import android.os.Bundle
+import android.support.v4.app.FragmentManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,15 @@ import version.evening.canvas.flutrack.R
 import version.evening.canvas.flutrack.main.MainActivity
 import javax.inject.Inject
 
+
+private const val TAG = "map"
+
+fun addMapFragment(fragmentManager: FragmentManager, container: Int) {
+    if (fragmentManager.findFragmentByTag(TAG) == null) {
+        fragmentManager.beginTransaction().add(container, MapFragment(), TAG).commit()
+    }
+}
+
 class MapFragment : SupportMapFragment(), MapContract.View {
     @Inject
     lateinit var presenter: MapContract.Presenter
@@ -22,6 +32,8 @@ class MapFragment : SupportMapFragment(), MapContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        retainInstance = true
 
         val appComponent = (activity?.application as FlutrackApplication).appComponent
 
