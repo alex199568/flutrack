@@ -3,4 +3,13 @@
     <issue id="all">
         <ignore path="*/generated/*" />
     </issue>
+    <issue id="UnusedResources">
+        <ignore path="*/map_style.json"/>
+    </issue>
+    <issue id="Overdraw">
+        <ignore path="*/percentage.xml"/>
+        <ignore path="*/total_symptoms.xml"/>
+        <ignore path="*/total_tweets.xml"/>
+        <ignore path="*/most_frequent_symptom.xml"/>
+    </issue>
 </lint>

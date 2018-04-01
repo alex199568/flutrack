@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/primaryColor"
+    >
+
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dashboardHintMarginBottom"
+        android:layout_marginEnd="@dimen/dashboardHintMarginRight"
+        android:layout_marginStart="@dimen/dashboardHintMarginLeft"
+        android:paddingLeft="@dimen/dashboardHintPaddingLeft"
+        android:paddingBottom="@dimen/dashboardHintPaddingBottom"
+        android:paddingTop="@dimen/dashboardHintPaddingTop"
+        android:textSize="@dimen/dashboardHintTextSize"
+        android:text="@string/mostFrequestSymptomSubtitle"
+        android:textColor="@color/primaryColor"
+        android:background="@android:color/white"
+        android:fontFamily="@font/oswald_font_family"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginRight="@dimen/dashboardHintMarginRight"
+        android:layout_marginLeft="@dimen/dashboardHintMarginLeft"
+        android:paddingStart="@dimen/dashboardHintPaddingLeft"
+        tools:ignore="RtlSymmetry"/>
+
+    <TextView
+        android:id="@+id/mostFrequentSymptom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dashboardLabelMarginRight"
+        android:layout_marginTop="@dimen/dashboardLabelMarginTop"
+        android:fontFamily="@font/oswald_font_family"
+        tools:text="Soar throat"
+        android:text="@string/loading"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/dashboardLabelTextSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginRight="@dimen/dashboardLabelMarginRight"/>
+
+    <TextView
+        android:id="@+id/mostFrequentSymptomValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dashboardNumberMarginBottom"
+        android:layout_marginEnd="@dimen/dashboardNumberMarginRight"
+        android:layout_marginTop="@dimen/dashboardNumberMarginTop"
+        android:fontFamily="@font/oswald_font_family"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/dashboardNumberTextSize"
+        android:textStyle="bold"
+        android:text="@string/loading"
+        app:layout_constraintBottom_toTopOf="@+id/subtitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mostFrequentSymptom"
+        tools:text="1298"
+        android:layout_marginRight="@dimen/dashboardNumberMarginRight"/>
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="@dimen/dashboardIconSize"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/dashboardIconMarginBottom"
+        android:layout_marginStart="@dimen/dashboardIconMarginLeft"
+        android:layout_marginTop="@dimen/dashboardIconMarginTop"
+        android:scaleType="fitCenter"
+        android:tint="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@+id/subtitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_exclamation_circle"
+        tools:ignore="ContentDescription"
+        android:layout_marginLeft="@dimen/dashboardIconMarginLeft"/>
+</android.support.constraint.ConstraintLayout>

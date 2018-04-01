@@ -1,6 +1,11 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+androidExtensions {
+    experimental = true
+}
 
 android {
     compileSdkVersion 27
@@ -19,6 +24,21 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        def fabricKeyValue = System.getenv("FABRIC_KEY")
+        manifestPlaceholders = [fabricKey: fabricKeyValue == null ? "" : fabricKeyValue ]
+
+        def secretProperties = new Properties()
+        file("${rootProject.projectDir}/secret.properties").withInputStream { stream ->
+            secretProperties.load(stream)
+        }
+        secretProperties.forEach { key, value ->
+            if (key == "GOOGLE_MAPS_API_KEY") {
+                manifestPlaceholders.put('googleMapsKey', value)
+            } else {
+                buildConfigField("String", key, value)
+            }
+        }
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -64,7 +84,12 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
             '**/*Test*.*',
             'android/**/*.*',
             '**/*Fragment*',
-            '**/*Activity*'
+            '**/*Activity*',
+            '**/*Scope*',
+            '**/*Component*',
+            '**/*Module*',
+            '**/*DataClass*',
+            '**/*Application*'
     ]
     classDirectories = fileTree(
             dir: "$buildDir/intermediates/classes/debug",
@@ -87,18 +112,41 @@ fileTree(
         dir: "$buildDir/tmp/kotlin-classes/debug",
 )
 
+apply plugin: 'io.fabric'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:27.1.0'
     implementation 'com.android.support:support-media-compat:27.1.0'
     implementation 'com.android.support:support-v4:27.1.0'
+    implementation 'com.android.support:design:27.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    implementation 'com.google.firebase:firebase-core:11.8.0'
+    implementation 'com.google.android.gms:play-services-maps:12.0.1'
+    implementation 'com.google.firebase:firebase-core:12.0.1'
     testImplementation 'junit:junit:4.12'
+    testImplementation "org.mockito:mockito-core:2.15.0"
+    testImplementation "com.nhaarman:mockito-kotlin:1.5.0"
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     androidTestUtil 'com.android.support.test:orchestrator:1.0.1'
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') {
+        transitive = true
+    }
+    implementation "io.reactivex.rxjava2:rxjava:2.1.10"
+    implementation "io.reactivex.rxjava2:rxandroid:2.0.2"
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.google.dagger:dagger:2.14.1'
+    kapt "com.google.dagger:dagger-compiler:2.11"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:2.3.0"
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.squareup.okhttp3:okhttp:3.8.1'
+    implementation 'com.android.support:cardview-v7:27.1.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

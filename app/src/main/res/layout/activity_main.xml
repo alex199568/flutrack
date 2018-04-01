@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="UnusedResources"
+    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    tools:ignore="UnusedResources,InconsistentLayout"
     >
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/input_field"
-        android:inputType="text"/>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@android:drawable/arrow_down_float"
-        android:contentDescription="arrow_down"
-        android:layout_gravity="center"
-        android:id="@+id/process_button"
-        tools:ignore="HardcodedText"/>
+        <android.support.design.widget.TabLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/primaryColor"
+            android:layout_gravity="bottom"
+            app:tabSelectedTextColor="@android:color/white"
+            app:tabTextColor="@android:color/darker_gray"
+            app:tabIndicatorColor="@color/secondaryColor"
+            />
+    </android.support.v4.view.ViewPager>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/output_field"
-        />
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>
