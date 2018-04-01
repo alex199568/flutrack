@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="dashboardNumberTextSize">20sp</dimen>
+    <dimen name="dashboardHintTextSize">12sp</dimen>
+    <dimen name="dashboardHintMarginBottom">4dp</dimen>
+    <dimen name="dashboardHintMarginRight">4dp</dimen>
+    <dimen name="dashboardHintMarginLeft">4dp</dimen>
+    <dimen name="dashboardHintPaddingLeft">16dp</dimen>
+    <dimen name="dashboardHintPaddingBottom">4dp</dimen>
+    <dimen name="dashboardHintPaddingTop">4dp</dimen>
+    <dimen name="dashboardLabelMarginRight">24dp</dimen>
+    <dimen name="dashboardLabelMarginTop">8dp</dimen>
+    <dimen name="dashboardLabelTextSize">12sp</dimen>
+    <dimen name="dashboardNumberMarginBottom">16dp</dimen>
+    <dimen name="dashboardNumberMarginRight">24dp</dimen>
+    <dimen name="dashboardNumberMarginTop">8dp</dimen>
+    <dimen name="dashboardIconSize">32dp</dimen>
+    <dimen name="dashboardIconMarginBottom">16dp</dimen>
+    <dimen name="dashboardIconMarginLeft">24dp</dimen>
+    <dimen name="dashboardIconMarginTop">16dp</dimen>
+</resources>
