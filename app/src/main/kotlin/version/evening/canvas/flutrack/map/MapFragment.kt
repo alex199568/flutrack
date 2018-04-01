@@ -14,7 +14,6 @@ import version.evening.canvas.flutrack.R
 import version.evening.canvas.flutrack.main.MainActivity
 import javax.inject.Inject
 
-
 private const val TAG = "map"
 
 fun addMapFragment(fragmentManager: FragmentManager, container: Int) {
