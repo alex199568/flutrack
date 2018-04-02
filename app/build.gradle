@@ -21,23 +21,16 @@ android {
         applicationId "version.evening.canvas.flutrack"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         def fabricKeyValue = System.getenv("FABRIC_KEY")
-        manifestPlaceholders = [fabricKey: fabricKeyValue == null ? "" : fabricKeyValue ]
+        def googleMapsKeyValue = System.getenv("GOOGLE_MAPS_KEY")
+        manifestPlaceholders = [
+                fabricKey: fabricKeyValue == null ? "" : fabricKeyValue,
+                googleMapsKey: googleMapsKeyValue == null ? "" : googleMapsKeyValue
+        ]
 
-        def secretProperties = new Properties()
-        file("${rootProject.projectDir}/secret.properties").withInputStream { stream ->
-            secretProperties.load(stream)
-        }
-        secretProperties.forEach { key, value ->
-            if (key == "GOOGLE_MAPS_API_KEY") {
-                manifestPlaceholders.put('googleMapsKey', value)
-            } else {
-                buildConfigField("String", key, value)
-            }
-        }
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
