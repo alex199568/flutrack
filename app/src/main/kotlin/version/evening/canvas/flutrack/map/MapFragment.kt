@@ -43,11 +43,6 @@ class MapFragment : SupportMapFragment(), MapContract.View {
                 .build().inject(this)
     }
 
-    override fun onActivityCreated(p0: Bundle?) {
-        super.onActivityCreated(p0)
-        (activity as MainActivity).presenter.registerDependentPresenter(presenter)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return super.onCreateView(inflater, container, savedInstanceState)
                 ?: throw IllegalStateException("google maps didn't create view")

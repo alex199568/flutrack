@@ -42,7 +42,6 @@ class DashboardFragment : Fragment(), DashboardContract.View {
     override fun onActivityCreated(state: Bundle?) {
         super.onActivityCreated(state)
         state?.let { presenter.restoreState(it) }
-        (activity as MainActivity).presenter.registerDependentPresenter(presenter)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
