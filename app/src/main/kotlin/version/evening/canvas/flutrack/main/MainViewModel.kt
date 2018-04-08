@@ -27,6 +27,7 @@ class MainViewModel : ViewModel() {
         flutrackAll
                 .results()
                 .subscribeOn(schedulersWrapper.io())
+                .observeOn(schedulersWrapper.io())
                 .doOnTerminate { requestInProgress = false }
                 .subscribe({ inMemoryStorage.rewrite(it) }, { onError.postValue(Unit) })
     }

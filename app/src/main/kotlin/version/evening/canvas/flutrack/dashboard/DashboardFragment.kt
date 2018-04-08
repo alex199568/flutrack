@@ -13,7 +13,6 @@ import kotlinx.android.synthetic.main.total_symptoms.totalSymptomsValue
 import kotlinx.android.synthetic.main.total_tweets.tweetsValue
 import version.evening.canvas.flutrack.FlutrackApplication
 import version.evening.canvas.flutrack.R
-import version.evening.canvas.flutrack.main.MainActivity
 import javax.inject.Inject
 
 private const val TAG = "dashboard"

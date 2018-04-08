@@ -12,7 +12,6 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import version.evening.canvas.flutrack.FlutrackApplication
 import version.evening.canvas.flutrack.R
-import version.evening.canvas.flutrack.main.MainActivity
 import javax.inject.Inject
 
 private const val TAG = "map"
@@ -61,11 +60,7 @@ class MapFragment : SupportMapFragment(), MapContract.View {
     }
 
     override fun showMapTweet(mapTweet: MapTweet): Boolean {
-        if (!this::map.isInitialized) {
-            return false
-        }
-        if (infoWindowAdapter == null) {
-            context?.let { initInfoWindowAdapter(it) }
+        if (!(checkMap() && checkInfoWindowAdapter())) {
             return false
         }
         val markerOptions = MarkerOptions().apply {
@@ -80,6 +75,16 @@ class MapFragment : SupportMapFragment(), MapContract.View {
         presenter.stop()
         infoWindowAdapter = null
         super.onDestroyView()
+    }
+
+    private fun checkMap(): Boolean = this::map.isInitialized
+
+    private fun checkInfoWindowAdapter(): Boolean {
+        if (infoWindowAdapter == null) {
+            context?.let { initInfoWindowAdapter(it) }
+            return false
+        }
+        return true
     }
 
     private fun initInfoWindowAdapter(context: Context) {
