@@ -9,11 +9,13 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.viewPager
 import version.evening.canvas.flutrack.AboutDialogFragment
 import version.evening.canvas.flutrack.ErrorDialogFragment
+import version.evening.canvas.flutrack.FlutrackApplication
 import version.evening.canvas.flutrack.R
 import version.evening.canvas.flutrack.dashboard.DashboardFragment
 import version.evening.canvas.flutrack.dashboard.addDashboardFragment
 import version.evening.canvas.flutrack.map.MapFragment
 import version.evening.canvas.flutrack.map.addMapFragment
+import javax.inject.Inject
 
 private const val ABOUT_TAG = "about_dialog"
 private const val ERROR_TAG = "error_dialog"
@@ -24,12 +26,18 @@ class MainActivity : AppCompatActivity() {
     private lateinit var dashboardFragment: DashboardFragment
     private lateinit var mapFragment: MapFragment
 
+    @Inject
+    lateinit var viewModelFactory: MainViewModel.Factory
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        (application as FlutrackApplication).appComponent.inject(this)
+
+        mainViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
         mainViewModel.onError.observe(this, Observer<Unit> { showErrorDialog() })
+        mainViewModel.requestFlutweets()
 
         dashboardFragment = DashboardFragment()
         mapFragment = MapFragment()

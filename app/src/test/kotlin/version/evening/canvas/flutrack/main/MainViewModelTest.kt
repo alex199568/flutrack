@@ -46,12 +46,7 @@ class MainViewModelTest {
         `when`(schedulers.android()).thenReturn(Schedulers.trampoline())
         `when`(schedulers.io()).thenReturn(Schedulers.trampoline())
 
-        viewModel = MainViewModel()
-        viewModel.let {
-            it.flutrackAll = flutrackAll
-            it.inMemoryStorage = storage
-            it.schedulersWrapper = schedulers
-        }
+        viewModel = MainViewModel(flutrackAll, storage, schedulers)
     }
 
     @Test

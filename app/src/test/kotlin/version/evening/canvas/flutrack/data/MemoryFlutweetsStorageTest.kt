@@ -1,14 +1,22 @@
 package version.evening.canvas.flutrack.data
 
+import android.arch.core.executor.testing.InstantTaskExecutorRule
 import io.reactivex.observers.TestObserver
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
+@RunWith(JUnit4::class)
 class MemoryFlutweetsStorageTest {
     private val tweet1 = FluTweet()
     private val tweet2 = FluTweet()
 
     private lateinit var storage: MemoryFlutweetsStorage
+
+    @get:Rule
+    val instantExecutor = InstantTaskExecutorRule()
 
     @Before
     fun setup() {

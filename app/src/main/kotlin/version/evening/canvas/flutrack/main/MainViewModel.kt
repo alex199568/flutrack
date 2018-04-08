@@ -2,22 +2,20 @@ package version.evening.canvas.flutrack.main
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import android.arch.lifecycle.ViewModelProvider
 import version.evening.canvas.flutrack.SchedulersWrapper
 import version.evening.canvas.flutrack.data.FlutrackAll
 import version.evening.canvas.flutrack.data.MemoryFlutweetsStorage
 import javax.inject.Inject
 
-class MainViewModel : ViewModel() {
+class MainViewModel(
+        private val flutrackAll: FlutrackAll,
+        private val inMemoryStorage: MemoryFlutweetsStorage,
+        private val schedulersWrapper: SchedulersWrapper
+) : ViewModel() {
     private var requestInProgress = false
 
     val onError = MutableLiveData<Unit>()
-
-    @Inject
-    lateinit var flutrackAll: FlutrackAll
-    @Inject
-    lateinit var inMemoryStorage: MemoryFlutweetsStorage
-    @Inject
-    lateinit var schedulersWrapper: SchedulersWrapper
 
     fun requestFlutweets() {
         if (requestInProgress) {
@@ -30,5 +28,16 @@ class MainViewModel : ViewModel() {
                 .observeOn(schedulersWrapper.io())
                 .doOnTerminate { requestInProgress = false }
                 .subscribe({ inMemoryStorage.rewrite(it) }, { onError.postValue(Unit) })
+    }
+
+    class Factory @Inject constructor(
+            private val flutrackAll: FlutrackAll,
+            private val inMemoryStorage: MemoryFlutweetsStorage,
+            private val schedulersWrapper: SchedulersWrapper
+    ) : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            return MainViewModel(flutrackAll, inMemoryStorage, schedulersWrapper) as T
+        }
     }
 }

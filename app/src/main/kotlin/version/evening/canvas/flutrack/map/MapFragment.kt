@@ -1,5 +1,8 @@
 package version.evening.canvas.flutrack.map
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
@@ -12,6 +15,7 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import version.evening.canvas.flutrack.FlutrackApplication
 import version.evening.canvas.flutrack.R
+import version.evening.canvas.flutrack.data.FluTweet
 import javax.inject.Inject
 
 private const val TAG = "map"
@@ -22,24 +26,22 @@ fun addMapFragment(fragmentManager: FragmentManager, container: Int) {
     }
 }
 
-class MapFragment : SupportMapFragment(), MapContract.View {
-    @Inject
-    lateinit var presenter: MapContract.Presenter
-
+class MapFragment : SupportMapFragment() {
     private lateinit var map: GoogleMap
-    private var infoWindowAdapter: TweetInfoWindowAdapter? = null
+    private lateinit var infoWindowAdapter: TweetInfoWindowAdapter
+    private lateinit var viewModel: MapViewModel
+
+    @Inject
+    lateinit var viewModelFactory: MapViewModel.Factory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         retainInstance = true
 
-        val appComponent = (activity?.application as FlutrackApplication).appComponent
+        (activity?.application as FlutrackApplication).appComponent.inject(this)
 
-        DaggerMapComponent.builder()
-                .appComponent(appComponent)
-                .mapModule(MapModule(this))
-                .build().inject(this)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MapViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -54,45 +56,33 @@ class MapFragment : SupportMapFragment(), MapContract.View {
                 setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style))
                 uiSettings.isMapToolbarEnabled = false
             }
-            context?.let { initInfoWindowAdapter(it) }
+            context?.let {
+                initInfoWindowAdapter(it)
+                setupData()
+            }
         }
         super.onViewCreated(view, savedInstanceState)
     }
 
-    override fun showMapTweet(mapTweet: MapTweet): Boolean {
-        if (!(checkMap() && checkInfoWindowAdapter())) {
-            return false
-        }
+    private fun showTweets(tweets: List<FluTweet>) {
+        tweets.forEach { showMapTweet(MapTweet(it)) }
+    }
+
+    private fun showMapTweet(mapTweet: MapTweet) {
         val markerOptions = MarkerOptions().apply {
             position(mapTweet.latLng)
         }
         val marker = map.addMarker(markerOptions)
-        infoWindowAdapter?.registerMarkerData(marker, mapTweet)
-        return true
-    }
-
-    override fun onDestroyView() {
-        presenter.stop()
-        infoWindowAdapter = null
-        super.onDestroyView()
-    }
-
-    private fun checkMap(): Boolean = this::map.isInitialized
-
-    private fun checkInfoWindowAdapter(): Boolean {
-        if (infoWindowAdapter == null) {
-            context?.let { initInfoWindowAdapter(it) }
-            return false
-        }
-        return true
+        infoWindowAdapter.registerMarkerData(marker, mapTweet)
     }
 
     private fun initInfoWindowAdapter(context: Context) {
-        if (infoWindowAdapter != null) {
-            return
-        }
         infoWindowAdapter = TweetInfoWindowAdapter(context)
-        presenter.onViewIsReady()
         map.setInfoWindowAdapter(infoWindowAdapter)
+    }
+
+    private fun setupData() {
+        viewModel.data.value?.let { showTweets(it) }
+        viewModel.data.observe(this, Observer<List<FluTweet>> { it?.let { showTweets(it) } })
     }
 }
