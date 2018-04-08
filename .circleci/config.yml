@@ -74,5 +74,5 @@ workflows:
                     - unit_tests
                 filters:
                     branches:
-                        only: master
+                        only: release
 
