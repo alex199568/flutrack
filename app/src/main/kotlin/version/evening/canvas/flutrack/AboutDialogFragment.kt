@@ -6,7 +6,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 
-class AboutFragment : DialogFragment() {
+class AboutDialogFragment : DialogFragment() {
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(activity)
@@ -21,5 +21,3 @@ class AboutFragment : DialogFragment() {
         }.create()
     }
 }
-
-fun createAboutFragment(): AboutFragment = AboutFragment()
