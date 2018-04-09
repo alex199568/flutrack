@@ -15,17 +15,17 @@ import org.mockito.MockitoAnnotations.initMocks
 import version.evening.canvas.flutrack.SchedulersWrapper
 import version.evening.canvas.flutrack.data.FluTweet
 import version.evening.canvas.flutrack.data.FlutrackAll
-import version.evening.canvas.flutrack.data.MemoryFlutweetsStorage
 import java.util.concurrent.TimeUnit
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import org.junit.Rule
+import version.evening.canvas.flutrack.data.FluTweetDao
 
 @RunWith(JUnit4::class)
 class MainViewModelTest {
     @Mock
     private lateinit var flutrackAll: FlutrackAll
     @Mock
-    private lateinit var storage: MemoryFlutweetsStorage
+    private lateinit var fluTweetDao: FluTweetDao
     @Mock
     private lateinit var schedulers: SchedulersWrapper
     @Mock
@@ -35,7 +35,7 @@ class MainViewModelTest {
     val instantExecutor = InstantTaskExecutorRule()
 
     private val tweet1 = FluTweet()
-    private val tweet2 = FluTweet("another")
+    private val tweet2 = FluTweet(1, "another")
 
     private lateinit var viewModel: MainViewModel
 
@@ -46,7 +46,7 @@ class MainViewModelTest {
         `when`(schedulers.android()).thenReturn(Schedulers.trampoline())
         `when`(schedulers.io()).thenReturn(Schedulers.trampoline())
 
-        viewModel = MainViewModel(flutrackAll, storage, schedulers)
+        viewModel = MainViewModel(flutrackAll, fluTweetDao, schedulers)
     }
 
     @Test
@@ -57,7 +57,8 @@ class MainViewModelTest {
         viewModel.requestFlutweets()
 
         verify(schedulers, times(2)).io()
-        verify(storage).rewrite(results)
+        verify(fluTweetDao).deleteAll()
+        verify(fluTweetDao).save(results)
     }
 
     @Test

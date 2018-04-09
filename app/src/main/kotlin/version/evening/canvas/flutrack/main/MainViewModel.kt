@@ -3,7 +3,6 @@ package version.evening.canvas.flutrack.main
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import android.util.Log
 import version.evening.canvas.flutrack.SchedulersWrapper
 import version.evening.canvas.flutrack.data.FlutrackAll
 import version.evening.canvas.flutrack.data.FluTweetDao
@@ -30,9 +29,7 @@ class MainViewModel(
                 .doOnTerminate { requestInProgress = false }
                 .subscribe({
                     fluTweetDao.apply {
-                        Log.d("FUCK", "deleting all")
                         deleteAll()
-                        Log.d("FUCK", "saving all")
                         save(it)
                     }
                 }, { onError.postValue(Unit) })

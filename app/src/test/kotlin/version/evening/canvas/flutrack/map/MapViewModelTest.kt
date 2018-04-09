@@ -14,12 +14,12 @@ import org.mockito.Mockito.argThat
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations.initMocks
 import version.evening.canvas.flutrack.data.FluTweet
-import version.evening.canvas.flutrack.data.MemoryFlutweetsStorage
+import version.evening.canvas.flutrack.data.FluTweetDao
 
 @RunWith(JUnit4::class)
 class MapViewModelTest {
     @Mock
-    private lateinit var storage: MemoryFlutweetsStorage
+    private lateinit var fluTweetDao: FluTweetDao
     @Mock
     private lateinit var observer: Observer<List<FluTweet>>
 
@@ -31,16 +31,16 @@ class MapViewModelTest {
     val instantExecutor = InstantTaskExecutorRule()
 
     private val tweet1 = FluTweet()
-    private val tweet2 = FluTweet("another")
+    private val tweet2 = FluTweet(1, "another")
 
     @Before
     fun setup() {
         initMocks(this)
 
         data = MutableLiveData()
-        `when`(storage.data).thenReturn(data)
+        `when`(fluTweetDao.getAll()).thenReturn(data)
 
-        viewModel = MapViewModel(storage)
+        viewModel = MapViewModel(fluTweetDao)
         viewModel.data.observeForever(observer)
     }
 
