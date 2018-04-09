@@ -34,8 +34,6 @@ class DashboardFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        retainInstance = true
-
         activity?.let {
             (it.application as FlutrackApplication).appComponent.inject(this)
         }
@@ -49,7 +47,6 @@ class DashboardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.statsData.value?.let { showStats(it) }
         viewModel.statsData.observe(this, Observer { it?.let { showStats(it) } })
     }
 

@@ -29,7 +29,7 @@ class MainViewModelTest {
     @Mock
     private lateinit var schedulers: SchedulersWrapper
     @Mock
-    private lateinit var errorObserver: Observer<Unit>
+    private lateinit var errorObserver: Observer<ErrorState>
 
     @get:Rule
     val instantExecutor = InstantTaskExecutorRule()
@@ -45,8 +45,6 @@ class MainViewModelTest {
 
         `when`(schedulers.android()).thenReturn(Schedulers.trampoline())
         `when`(schedulers.io()).thenReturn(Schedulers.trampoline())
-
-        viewModel = MainViewModel(flutrackAll, fluTweetDao, schedulers)
     }
 
     @Test
@@ -54,11 +52,13 @@ class MainViewModelTest {
         val results = listOf(tweet1, tweet2)
         `when`(flutrackAll.results()).thenReturn(Observable.just(results))
 
-        viewModel.requestFlutweets()
+        viewModel = MainViewModel(flutrackAll, fluTweetDao, schedulers)
+        viewModel.errorData.observeForever(errorObserver)
 
         verify(schedulers, times(2)).io()
         verify(fluTweetDao).deleteAll()
         verify(fluTweetDao).save(results)
+        verify(errorObserver).onChanged(ErrorState.DEFAULT)
     }
 
     @Test
@@ -66,7 +66,7 @@ class MainViewModelTest {
         val results = listOf(tweet1, tweet2)
         `when`(flutrackAll.results()).thenReturn(Observable.just(results).delay(100, TimeUnit.MILLISECONDS))
 
-        viewModel.requestFlutweets()
+        viewModel = MainViewModel(flutrackAll, fluTweetDao, schedulers)
         viewModel.requestFlutweets()
 
         verify(schedulers, times(2)).io()
@@ -76,9 +76,9 @@ class MainViewModelTest {
     fun testEventIsEmittedOnError() {
         `when`(flutrackAll.results()).thenReturn(Observable.error(RuntimeException("error!")))
 
-        viewModel.onError.observeForever(errorObserver)
-        viewModel.requestFlutweets()
+        viewModel = MainViewModel(flutrackAll, fluTweetDao, schedulers)
+        viewModel.errorData.observeForever(errorObserver)
 
-        verify(errorObserver).onChanged(Unit)
+        verify(errorObserver).onChanged(ErrorState.ERROR_DIALOG_SHOWN)
     }
 }

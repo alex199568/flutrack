@@ -36,8 +36,6 @@ class MapFragment : SupportMapFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        retainInstance = true
-
         (activity?.application as FlutrackApplication).appComponent.inject(this)
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MapViewModel::class.java)
@@ -81,7 +79,6 @@ class MapFragment : SupportMapFragment() {
     }
 
     private fun setupData() {
-        viewModel.data.value?.let { showTweets(it) }
         viewModel.data.observe(this, Observer<List<FluTweet>> { it?.let { showTweets(it) } })
     }
 }
