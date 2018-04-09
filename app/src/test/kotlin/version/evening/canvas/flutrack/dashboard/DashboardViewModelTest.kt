@@ -4,7 +4,6 @@ import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import com.nhaarman.mockito_kotlin.argumentCaptor
-import io.reactivex.schedulers.Schedulers
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -13,17 +12,14 @@ import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations.initMocks
-import version.evening.canvas.flutrack.SchedulersWrapper
 import version.evening.canvas.flutrack.data.FluTweet
-import version.evening.canvas.flutrack.data.MemoryFlutweetsStorage
+import version.evening.canvas.flutrack.data.FluTweetDao
 
 class DashboardViewModelTest {
     @Mock
-    private lateinit var storage: MemoryFlutweetsStorage
+    private lateinit var observer: Observer<DashboardStats?>
     @Mock
-    private lateinit var schedulers: SchedulersWrapper
-    @Mock
-    private lateinit var observer: Observer<DashboardStats>
+    private lateinit var fluTweetDao: FluTweetDao
 
     @get:Rule
     val instantExecutor = InstantTaskExecutorRule()
@@ -38,13 +34,10 @@ class DashboardViewModelTest {
     fun setup() {
         initMocks(this)
 
-        `when`(schedulers.android()).thenReturn(Schedulers.trampoline())
-        `when`(schedulers.io()).thenReturn(Schedulers.trampoline())
-
         storageData = MutableLiveData()
-        `when`(storage.data).thenReturn(storageData)
+        `when`(fluTweetDao.getAll()).thenReturn(storageData)
 
-        viewModel = DashboardViewModel(storage, schedulers)
+        viewModel = DashboardViewModel(fluTweetDao)
         viewModel.statsData.observeForever(observer)
     }
 
@@ -63,5 +56,12 @@ class DashboardViewModelTest {
         assertEquals("Flu", stats.mostFrequentSymptom)
         assertEquals(2, stats.mostFrequentSymptomNumber)
         assertEquals(67, stats.mostFrequentSymptomPercentage)
+    }
+
+    @Test
+    fun testDashboardStatsWithEmptyStorage() {
+        storageData.postValue(emptyList())
+
+        verify(observer).onChanged(null)
     }
 }

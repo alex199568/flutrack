@@ -5,12 +5,12 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import version.evening.canvas.flutrack.SchedulersWrapper
 import version.evening.canvas.flutrack.data.FlutrackAll
-import version.evening.canvas.flutrack.data.MemoryFlutweetsStorage
+import version.evening.canvas.flutrack.data.FluTweetDao
 import javax.inject.Inject
 
 class MainViewModel(
         private val flutrackAll: FlutrackAll,
-        private val inMemoryStorage: MemoryFlutweetsStorage,
+        private val fluTweetDao: FluTweetDao,
         private val schedulersWrapper: SchedulersWrapper
 ) : ViewModel() {
     private var requestInProgress = false
@@ -27,17 +27,22 @@ class MainViewModel(
                 .subscribeOn(schedulersWrapper.io())
                 .observeOn(schedulersWrapper.io())
                 .doOnTerminate { requestInProgress = false }
-                .subscribe({ inMemoryStorage.rewrite(it) }, { onError.postValue(Unit) })
+                .subscribe({
+                    fluTweetDao.apply {
+                        deleteAll()
+                        save(it)
+                    }
+                }, { onError.postValue(Unit) })
     }
 
     class Factory @Inject constructor(
             private val flutrackAll: FlutrackAll,
-            private val inMemoryStorage: MemoryFlutweetsStorage,
+            private val fluTweetDao: FluTweetDao,
             private val schedulersWrapper: SchedulersWrapper
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return MainViewModel(flutrackAll, inMemoryStorage, schedulersWrapper) as T
+            return MainViewModel(flutrackAll, fluTweetDao, schedulersWrapper) as T
         }
     }
 }
