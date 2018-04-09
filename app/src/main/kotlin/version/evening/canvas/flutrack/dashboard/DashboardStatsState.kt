@@ -29,7 +29,7 @@ data class DashboardStatsState(
         )
     }
 
-    fun processTweet(tweet: FluTweet) {
+    fun processTweet(tweet: FluTweet): DashboardStatsState {
         ++totalTweets
         Symptom.values().forEach {
             if (tweet.tweetText?.contains(it.symptom, true) == true) {
@@ -37,5 +37,6 @@ data class DashboardStatsState(
                 ++totalSymptoms
             }
         }
+        return this
     }
 }

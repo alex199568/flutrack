@@ -50,7 +50,7 @@ class DashboardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.statsData.value?.let { showStats(it) }
-        viewModel.statsData.observe(this, Observer<DashboardStats> { it?.let { showStats(it) } })
+        viewModel.statsData.observe(this, Observer { it?.let { showStats(it) } })
     }
 
     private fun showStats(stats: DashboardStats) {

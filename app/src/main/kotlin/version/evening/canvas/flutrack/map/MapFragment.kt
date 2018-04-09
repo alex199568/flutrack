@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -64,6 +65,7 @@ class MapFragment : SupportMapFragment() {
     }
 
     private fun showTweets(tweets: List<FluTweet>) {
+        Log.d("FUCK", "showing map tweets")
         tweets.forEach { showMapTweet(MapTweet(it)) }
     }
 
@@ -81,7 +83,13 @@ class MapFragment : SupportMapFragment() {
     }
 
     private fun setupData() {
-        viewModel.data.value?.let { showTweets(it) }
-        viewModel.data.observe(this, Observer<List<FluTweet>> { it?.let { showTweets(it) } })
+        viewModel.data.value?.let {
+            Log.d("FUCK", "showing initial map data")
+            showTweets(it) }
+        viewModel.data.observe(this, Observer<List<FluTweet>> {
+            Log.d("FUCK", "checking map data for null")
+            it?.let {
+            Log.d("FUCK", "showing arrived map data")
+            showTweets(it) } })
     }
 }

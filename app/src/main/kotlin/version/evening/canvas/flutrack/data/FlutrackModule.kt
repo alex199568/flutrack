@@ -1,5 +1,6 @@
 package version.evening.canvas.flutrack.data
 
+import android.arch.persistence.room.Room
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -58,5 +59,13 @@ class FlutrackModule {
 
     @AppScope
     @Provides
-    fun provideMemoryFlutweetsStorage(): MemoryFlutweetsStorage = MemoryFlutweetsStorage()
+    fun provideDatabase(context: Context): FluDatabase =
+            Room.inMemoryDatabaseBuilder(
+                    context.applicationContext,
+                    FluDatabase::class.java
+            ).build()
+
+    @AppScope
+    @Provides
+    fun provideFluTweetDao(fluDatabase: FluDatabase): FluTweetDao = fluDatabase.fluTweetDao()
 }
