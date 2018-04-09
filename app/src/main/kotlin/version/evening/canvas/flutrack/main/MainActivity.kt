@@ -1,12 +1,13 @@
 package version.evening.canvas.flutrack.main
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.viewPager
-import version.evening.canvas.flutrack.AboutFragment
+import version.evening.canvas.flutrack.AboutDialogFragment
 import version.evening.canvas.flutrack.ErrorDialogFragment
 import version.evening.canvas.flutrack.FlutrackApplication
 import version.evening.canvas.flutrack.R
@@ -19,40 +20,24 @@ import javax.inject.Inject
 private const val ABOUT_TAG = "about_dialog"
 private const val ERROR_TAG = "error_dialog"
 
-class MainActivity : AppCompatActivity(), MainContract.View {
-    override fun dismissErrorDialog() {
-        supportFragmentManager.findFragmentByTag(ERROR_TAG)?.let {
-            (it as DialogFragment).dismiss()
-        }
-    }
-
-    @Inject
-    lateinit var presenter: MainContract.Presenter
+class MainActivity : AppCompatActivity() {
+    private lateinit var mainViewModel: MainViewModel
 
     private lateinit var dashboardFragment: DashboardFragment
     private lateinit var mapFragment: MapFragment
 
-    override fun showAboutDialog() {
-        AboutFragment().show(supportFragmentManager, ABOUT_TAG)
-    }
-
-    override fun showErrorDialog() {
-        ErrorDialogFragment().let {
-            it.show(supportFragmentManager, ERROR_TAG)
-            it.retryObservable.subscribe { presenter.errorRetry() }
-        }
-    }
+    @Inject
+    lateinit var viewModelFactory: MainViewModel.Factory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        DaggerMainComponent.builder()
-                .appComponent((application as FlutrackApplication).appComponent)
-                .mainModule(MainModule(this))
-                .build().inject(this)
+        (application as FlutrackApplication).appComponent.inject(this)
 
-        presenter.start()
+        mainViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
+        mainViewModel.onError.observe(this, Observer<Unit> { showErrorDialog() })
+        mainViewModel.requestFlutweets()
 
         dashboardFragment = DashboardFragment()
         mapFragment = MapFragment()
@@ -77,20 +62,24 @@ class MainActivity : AppCompatActivity(), MainContract.View {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.about -> {
-                presenter.actionAbout()
+                showAboutDialog()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
-        outState?.let { presenter.saveState(it) }
-        super.onSaveInstanceState(outState)
+    private fun showErrorDialog() {
+        supportFragmentManager?.let {
+            val errorDialog = ErrorDialogFragment()
+            errorDialog.show(it, ERROR_TAG)
+            errorDialog.retryObservable.subscribe { mainViewModel.requestFlutweets() }
+        }
     }
 
-    override fun onDestroy() {
-        presenter.stop()
-        super.onDestroy()
+    private fun showAboutDialog() {
+        supportFragmentManager?.let {
+            AboutDialogFragment().show(it, ABOUT_TAG)
+        }
     }
 }
