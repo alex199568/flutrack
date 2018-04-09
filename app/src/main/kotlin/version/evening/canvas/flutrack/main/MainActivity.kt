@@ -3,6 +3,7 @@ package version.evening.canvas.flutrack.main
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -33,11 +34,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        dismissErrorDialog()
+
         (application as FlutrackApplication).appComponent.inject(this)
 
         mainViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
-        mainViewModel.onError.observe(this, Observer<Unit> { showErrorDialog() })
-        mainViewModel.requestFlutweets()
+        mainViewModel.errorData.observe(this, Observer<ErrorState> {
+            when (it) {
+                ErrorState.DEFAULT -> dismissErrorDialog()
+                ErrorState.ERROR_DIALOG_SHOWN -> showErrorDialog()
+            }
+        })
 
         dashboardFragment = DashboardFragment()
         mapFragment = MapFragment()
@@ -75,6 +82,10 @@ class MainActivity : AppCompatActivity() {
             errorDialog.show(it, ERROR_TAG)
             errorDialog.retryObservable.subscribe { mainViewModel.requestFlutweets() }
         }
+    }
+
+    private fun dismissErrorDialog() {
+        supportFragmentManager?.let { (it.findFragmentByTag(ERROR_TAG) as DialogFragment?)?.dismiss() }
     }
 
     private fun showAboutDialog() {
