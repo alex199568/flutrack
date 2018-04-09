@@ -1,10 +1,8 @@
 package version.evening.canvas.flutrack.map
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
-import io.reactivex.schedulers.Schedulers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -15,7 +13,6 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.argThat
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations.initMocks
-import version.evening.canvas.flutrack.SchedulersWrapper
 import version.evening.canvas.flutrack.data.FluTweet
 import version.evening.canvas.flutrack.data.MemoryFlutweetsStorage
 

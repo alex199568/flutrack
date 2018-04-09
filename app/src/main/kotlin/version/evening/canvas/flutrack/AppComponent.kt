@@ -1,6 +1,7 @@
 package version.evening.canvas.flutrack
 
 import dagger.Component
+import version.evening.canvas.flutrack.dashboard.DashboardFragment
 import version.evening.canvas.flutrack.data.FlutrackAll
 import version.evening.canvas.flutrack.data.FlutrackModule
 import version.evening.canvas.flutrack.data.MemoryFlutweetsStorage
@@ -16,4 +17,5 @@ interface AppComponent {
 
     fun inject(activity: MainActivity)
     fun inject(mapFragment: MapFragment)
+    fun inject(dashboardFragment: DashboardFragment)
 }
