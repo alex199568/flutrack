@@ -7,7 +7,6 @@ import version.evening.canvas.flutrack.data.FluTweet
 import version.evening.canvas.flutrack.data.MemoryFlutweetsStorage
 import javax.inject.Inject
 
-// TODO: try to move some logic from fragment into this class
 class MapViewModel(
         memoryStorage: MemoryFlutweetsStorage
 ) : ViewModel() {
